@@ -8,6 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import lombok.experimental.FieldNameConstants;
+
+import java.util.Set;
 
 @Entity
 @Getter
@@ -16,6 +19,7 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Table(name = "category")
 @Accessors(chain = true)
+@FieldNameConstants
 public class Category extends BaseEntity {
 
     @Id
@@ -30,6 +34,9 @@ public class Category extends BaseEntity {
     private String description;
 
     private Collection collection;
+
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    private Set<Post> posts;
 
 }
 

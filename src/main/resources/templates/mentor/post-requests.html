@@ -1,0 +1,76 @@
+<!doctype html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default.html}">
+<body>
+<div id="page" layout:fragment="content">
+  <main>
+    <div class="container">
+      <h1 class="tt-title-border">
+        POST REQUESTS
+      </h1>
+
+      <div class="card">
+        <table class="table ">
+          <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Title</th>
+            <th scope="col">Category</th>
+            <th scope="col">Tags</th>
+            <th scope="col">User</th>
+            <th scope="col">Created At</th>
+            <th scope="col">Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr th:each="post, index: ${posts}">
+              <td th:text="${index.index + 1}"></td>
+              <td th:text="${post.title}"></td>
+              <td th:text="${post.category?.name}"></td>
+
+              <td>
+                <p class="badge bg-primary" th:each="tag: ${post.tags}">
+                  [[${tag.name}]]
+                </p>
+              </td>
+
+              <td th:text="${post.user.name}"></td>
+              <td th:text="${#dates.format(post.createdAt, 'dd/MM/yy HH:mm:ss')}"></td>
+              <td style="width: 300px" class="row">
+                <a class="col-md-6 btn btn-secondary" th:href="@{/mentor/approve-post}">
+                  Approved
+                </a>
+                <a class="col-md-6 btn btn-danger" th:href="@{/mentor/reject-post}">
+                  Reject
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+
+<!--        <div class="tt-item tt-item-popup">-->
+<!--          <div class="tt-col-avatar">-->
+<!--            <svg class="tt-icon">-->
+<!--              <use xlink:href="#icon-ava-f"></use>-->
+<!--            </svg>-->
+<!--          </div>-->
+<!--          <div class="tt-col-message">-->
+<!--            Looks like you are new here. Register for free, learn and contribute.-->
+<!--          </div>-->
+<!--          <div class="tt-col-btn">-->
+<!--            <button type="button" class="btn btn-primary">Log in</button>-->
+<!--            <button type="button" class="btn btn-secondary">Sign up</button>-->
+<!--            <button type="button" class="btn-icon">-->
+<!--              <svg class="tt-icon">-->
+<!--                <use xlink:href="#icon-cancel"></use>-->
+<!--              </svg>-->
+<!--            </button>-->
+<!--          </div>-->
+<!--        </div>-->
+    </div>
+  </main>
+</div>
+</body>
+</html>

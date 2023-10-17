@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -31,5 +32,9 @@ public class Tag extends BaseEntity {
             joinColumns = @JoinColumn(name = "tag_id"),
             inverseJoinColumns = @JoinColumn(name = "post_id")
     )
-    private Set<Post> posts;
+    private Set<Post> posts = new HashSet<>();
+
+    public Tag(String name) {
+        this.name = name;
+    }
 }

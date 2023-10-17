@@ -5,6 +5,7 @@ public enum Collection {
     OPERATING,
     DOCUMENT,
     FAP,
-    COMMUNITY
-
+    COMMUNITY,
+    BUSINESS,
+    OTHER
 }

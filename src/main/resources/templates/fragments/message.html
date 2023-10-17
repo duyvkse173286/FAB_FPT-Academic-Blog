@@ -1,0 +1,18 @@
+<div th:fragment="message">
+    <div>
+        <th:block th:if="${session.message}">
+            <div class="alert alert-success alert-dismissible" >
+                <p th:text="${session.message}"></p>
+                <th:block th:text="${@sessionUtils.removeAttribute('message')}"></th:block>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </th:block>
+        <th:block th:if="${session.error}">
+            <div class="alert alert-danger alert-dismissible">
+                <p th:text="${session.error}"></p>
+                <th:block th:text="${@sessionUtils.removeAttribute('error')}"></th:block>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </th:block>
+    </div>
+</div>

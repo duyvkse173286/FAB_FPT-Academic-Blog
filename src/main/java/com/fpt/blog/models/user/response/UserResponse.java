@@ -3,10 +3,7 @@ package com.fpt.blog.models.user.response;
 import com.fpt.blog.enums.MemberType;
 import com.fpt.blog.enums.Role;
 import com.fpt.blog.enums.UserStatus;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -17,6 +14,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class UserResponse {
 
     private long id;

@@ -1,0 +1,31 @@
+.form-group.required .control-label:after {
+    content:"*";
+    color:red;
+}
+
+.form-group.required label:after {
+    content:"*";
+    color:red;
+}
+
+.create-post-icon {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    background: #3ebafa;
+    border-radius: 50%;
+    padding: 10px;
+    font-size: 3rem;
+    cursor: pointer;
+    color: #0b0b0b;
+    z-index: 999;
+}
+
+.create-post-icon:hover {
+    transform: scale(1.1);
+    transition: 0.2s;
+}
+
+.collection-icon {
+    font-size: 30px;
+}

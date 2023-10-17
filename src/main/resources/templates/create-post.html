@@ -1,0 +1,113 @@
+<!doctype html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default.html}">
+<body>
+<main id="page" layout:fragment="content">
+    <div class="container">
+        <div class="tt-wrapper-inner">
+            <h1 class="tt-title-border">
+                CREATE NEW POST
+            </h1>
+            <form class="form-default form-create-topic" method="post" >
+                <div class="form-group mb-3 required">
+                    <label for="title">Post Title</label>
+                    <input required type="text" name="title" class="form-control" id="title" th:value="${title}"
+                           placeholder="Subject of your post">
+                    <div class="tt-note">Describe your post well, while keeping the subject as short as possible.</div>
+                </div>
+
+                <!--                Collection-->
+                <div class="form-group mb-3">
+                    <label>Post collection</label>
+                    <div class="tt-js-active-btn tt-wrapper-btnicon">
+                        <div class="row tt-w410-col-02">
+                            <div class="col-4 col-lg-3 col-xl-2">
+                                <a href="#" class="tt-button-icon">
+                                    <span class="tt-icon collection-icon">
+                                      <ion-icon name="settings-outline"></ion-icon>
+                                    </span>
+                                    <span class="tt-text">Vận hành</span>
+                                </a>
+                            </div>
+                            <div class="col-4 col-lg-3 col-xl-2">
+                                <a href="#" class="tt-button-icon">
+                                    <span class="tt-icon collection-icon">
+                                         <ion-icon name="document-text-outline"></ion-icon>
+                                    </span>
+                                    <span class="tt-text">Tài liệu</span>
+                                </a>
+                            </div>
+                            <div class="col-4 col-lg-3 col-xl-2">
+                                <a href="#" class="tt-button-icon">
+                                    <span class="tt-icon collection-icon">
+                                         <ion-icon name="help-outline"></ion-icon>
+                                    </span>
+                                    <span class="tt-text">Hỏi đáp</span>
+                                </a>
+                            </div>
+                            <div class="col-4 col-lg-3 col-xl-2">
+                                <a href="#" class="tt-button-icon">
+                                    <span class="tt-icon collection-icon">
+                                        <ion-icon name="people-outline"></ion-icon>
+                                    </span>
+                                    <span class="tt-text">Cộng đồng</span>
+                                </a>
+                            </div>
+                            <div class="col-4 col-lg-3 col-xl-2">
+                                <a href="#" class="tt-button-icon">
+                                    <span class="tt-icon collection-icon">
+                                        <ion-icon name="settings-outline"></ion-icon>
+                                    </span>
+                                    <span class="tt-text">Kinh doanh</span>
+                                </a>
+                            </div>
+                            <div class="col-4 col-lg-3 col-xl-2">
+                                <a href="#" class="tt-button-icon">
+                                    <span class="tt-icon collection-icon">
+                                        <ion-icon name="document-attach-outline"></ion-icon>
+                                    </span>
+                                    <span class="tt-text">Khác</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--                Category-->
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <div class="form-group required">
+                            <label for="category">Category</label>
+                            <select class="form-control" required id="category" name="categoryId">
+                                <option th:each="cate: ${categories}" th:value="${cate.id}" th:checked="${categoryId == cate.id}">
+                                    [[${cate.name}]]
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label for="tags">Tags</label>
+                            <input th:value="${tags}" type="text" name="tags" class="form-control" id="tags"
+                                   placeholder="Use comma to separate tags">
+                        </div>
+                    </div>
+                </div>
+
+                <!--                Cotent-->
+                <div class="form-group required">
+                    <label for="content">Content</label>
+                    <textarea required id="content" name="content" class="form-control" rows="5"
+                              placeholder="Lets get started">[[${content}]]</textarea>
+                </div>
+                <div class="row">
+                    <div class="col-auto ml-md-auto">
+                        <button type="submit" class="btn btn-secondary btn-width-lg">Create Post</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+</body>
+</html>

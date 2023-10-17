@@ -7,11 +7,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import lombok.experimental.FieldNameConstants;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -21,6 +23,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Table(name = "post")
 @Accessors(chain = true)
+@FieldNameConstants
 public class Post extends BaseEntity {
 
     @Id
@@ -43,7 +46,7 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private PostStatus status;
+    private PostStatus status = PostStatus.WAITING;
 
     private LocalDateTime approvedAt;
 
@@ -58,19 +61,20 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     @BatchSize(size = 50)
-    private Set<Reaction> reactions;
+    private Set<Reaction> reactions = new HashSet<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     @BatchSize(size = 50)
-    private Set<Comment> comments;
+    private Set<Comment> comments = new HashSet<>();
 
     @ManyToMany(mappedBy = "posts", cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     @BatchSize(size = 50)
-    private Set<Tag> tags;
+    private Set<Tag> tags = new HashSet<>();
 
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
-    private Set<Media> medias;
+    private Set<Media> medias = new HashSet<>();
+
 
 }

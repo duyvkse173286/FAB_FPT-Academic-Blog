@@ -1,0 +1,79 @@
+<!doctype html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default.html}">
+<body>
+<main>
+    <div class="container" layout:fragment="content">
+        <div class="tt-loginpages-wrapper">
+            <div class="tt-loginpages">
+                <a th:href="@{/}" class="tt-block-title">
+                    <img th:src="@{/images/logo.png}" alt="">
+                    <div class="tt-title">
+                        Welcome to Forum19
+                    </div>
+                    <div class="tt-description">
+                       Log into your account to unlock true power of community.
+                    </div>
+                </a>
+                <div>
+                    <div th:if="${param.error}" class="alert alert-danger">
+                        Invalid username and password.
+                    </div>
+                </div>
+                <form class="form-default" method="post" th:action="@{/auth/login}">
+                    <div class="form-group required">
+                        <label for="email">Email</label>
+                        <input type="text" name="email" required class="form-control" id="email" placeholder="example@gmail.com">
+                    </div>
+                    <div class="form-group required">
+                        <label for="password">Password</label>
+                        <input type="password" required name="password" class="form-control" id="password" placeholder="************">
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="remember" name="remember-me">
+                                    <label for="remember">
+                                        <span class="check"></span>
+                                        <span class="box"></span>
+                                        <span class="tt-text">Remember me</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col ml-auto text-right">
+                            <a href="@{/auth/forgot-password}" class="tt-underline">Forgot Password</a>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-secondary btn-block">Log in</button>
+                    </div>
+                    <p>Or login with social network</p>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <a href="#" class="btn btn-color01 btn-secondary btn-block">
+                                    <i>
+                                        <svg class="icon">
+                                          <use xlink:href="#facebook-f-brands"></use>
+                                        </svg>
+                                    </i>
+                                    Google
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <p>Don’t have an account? <a th:href="@{/auth/signup}" class="tt-underline">Signup here</a></p>
+                    <div class="tt-notes">
+                        By Logging in, signing in or continuing, I agree to
+                        Forum19’s <a href="#" class="tt-underline">Terms of Use</a> and <a href="#" class="tt-underline">Privacy Policy.</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+<script src="../static/js/bundle.js"></script>
+</body>
+</html>
