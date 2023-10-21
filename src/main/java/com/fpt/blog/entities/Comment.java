@@ -8,6 +8,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 @Entity
 @Getter
 @Setter
@@ -15,7 +19,7 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Table(name = "comment")
 @Accessors(chain = true)
-public class Comment {
+public class Comment extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,6 +39,8 @@ public class Comment {
     @JoinColumn(name = "post_id")
     private Post post;
 
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+    private Set<Comment> replies = new HashSet<>();
 
 
 }

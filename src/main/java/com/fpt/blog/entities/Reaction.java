@@ -21,8 +21,6 @@ public class Reaction  extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private ReactType reactType;
-
     @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;

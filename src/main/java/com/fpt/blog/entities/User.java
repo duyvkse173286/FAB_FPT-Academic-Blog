@@ -9,9 +9,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import lombok.experimental.FieldNameConstants;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -21,6 +23,8 @@ import java.util.Set;
 @NoArgsConstructor
 @Table(name = "user")
 @Accessors(chain = true)
+@FieldNameConstants()
+
 public class User extends BaseEntity {
 
     @Id
@@ -56,11 +60,20 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Post> posts;
 
+    @OneToMany(mappedBy = "reviewBy", cascade = CascadeType.ALL)
+    private Set<Post> reviews;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Reaction> reactions;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Comment> comments;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Following> followers = new HashSet<>();
+
+    @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Following> followings = new HashSet<>();
 
 }
 

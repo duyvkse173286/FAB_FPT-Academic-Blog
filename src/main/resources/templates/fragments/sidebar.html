@@ -1,0 +1,38 @@
+<div th:fragment="sidebar" th:remove="tag" >
+  <div class="sidebar">
+    <div class="mb-5">
+      <h1 class="tt-title-border">
+        DANH MỤC
+      </h1>
+      <div class="side-category-list">
+        <!--/*@thymesVar id="categories" type="com.fpt.blog.models.category.response.CategoryResponse"*/-->
+        <div class="side-category-item" th:each="category: ${categories}">
+          <div class="row gx-3">
+            <div class="col-2">
+              <img class="side-category-item-thumbnail" th:src="${category.image != null ? category.image : '/images/single-topic-img01.jpg'}"/>
+            </div>
+            <div class="col-10">
+              <div class="side-category-item-meta">
+                <a th:href="@{'/posts?categoryId=' + ${category.id}}">
+                  <h6 class="side-category-item-name" th:text="${category.name}"></h6>
+                </a>
+                <p class="side-category-item-description" th:text="${category.description}"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <h1 class="tt-title-border">
+        TAGS
+      </h1>
+      <div>
+        <div class="tag-list">
+          <!--/*@thymesVar id="tags" type="com.fpt.blog.models.tag.TagResponse"*/-->
+          <a th:each="tag: ${tags}" th:href="@{'posts?tag=' + ${tag.name}}"><span class="badge bg-primary" th:text="${tag.name}"></span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

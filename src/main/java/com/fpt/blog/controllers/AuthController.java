@@ -1,6 +1,7 @@
 package com.fpt.blog.controllers;
 
 
+import com.fpt.blog.constants.BaseConstants;
 import com.fpt.blog.enums.Role;
 import com.fpt.blog.models.auth.request.LoginRequest;
 import com.fpt.blog.models.user.request.CreateUserRequest;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AuthController {
 
     private final UserService userService;
-    private final int MIN_PASSWORD_LENGTH = 8;
 
     @GetMapping("login")
     public String login(Model model) {
@@ -49,8 +49,8 @@ public class AuthController {
             }
 
             // check password
-            if (request.getPassword() == null || request.getPassword().length() < MIN_PASSWORD_LENGTH) {
-                session.setAttribute("error", String.format("Password must contain at least %d characters", MIN_PASSWORD_LENGTH));
+            if (request.getPassword() == null || request.getPassword().length() < BaseConstants.MIN_PASSWORD_LENGTH) {
+                session.setAttribute("error", String.format("Password must contain at least %d characters", BaseConstants.MIN_PASSWORD_LENGTH));
                 return "signup";
             }
 
@@ -61,7 +61,7 @@ public class AuthController {
             }
 
             // create user
-            UserResponse userResponse = userService.createUser(request, Role.STUDENT);
+            UserResponse userResponse = userService.createUser(request);
 
             // return login view
             session.setAttribute("message", "Sign up successfully");

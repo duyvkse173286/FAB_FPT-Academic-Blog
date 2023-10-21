@@ -26,10 +26,6 @@ public class Media {
 
     private String fileName;
 
-    @ManyToOne
-    @JoinColumn(name = "post_id")
-    private Post post;
-
     @Column(columnDefinition = "text")
     private String description;
 

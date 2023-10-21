@@ -1,5 +1,7 @@
 package com.fpt.blog.configurations;
 
+import com.fpt.blog.services.SecurityOAuth2UserService;
+import com.fpt.blog.services.UserService;
 import com.fpt.blog.services.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationListener;
@@ -18,11 +20,15 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.data.repository.query.SecurityEvaluationContextExtension;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.stereotype.Component;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@Component
 public class SecurityConfig {
+
+    private final SecurityOAuth2UserService oAuth2UserService;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -30,6 +36,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authConfig -> {
                     authConfig.requestMatchers(HttpMethod.GET, "/posts/create").authenticated();
                     authConfig.requestMatchers(HttpMethod.POST, "/posts/**").authenticated();
+                    authConfig.requestMatchers(HttpMethod.POST, "/users/**").authenticated();
                     authConfig.requestMatchers("/admin/**").hasAuthority("ADMIN");
                     authConfig.requestMatchers("/mentor/**").hasAuthority("MENTOR");
                     authConfig.anyRequest().permitAll();
@@ -51,7 +58,14 @@ public class SecurityConfig {
                 .rememberMe()
                 .userDetailsService(userDetailsService())
                 .and()
-                .csrf().disable();
+                .csrf().disable()
+                .oauth2Login()
+                .loginPage("/login")
+                .userInfoEndpoint()
+                .userService(oAuth2UserService)
+                .and()
+                .defaultSuccessUrl("/home");
+
 
         return http.build();
     }

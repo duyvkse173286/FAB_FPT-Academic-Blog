@@ -4,6 +4,6 @@ public enum PostStatus {
 
     WAITING,
     APPROVED,
-    DENIED
+    REJECTED
 
 }

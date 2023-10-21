@@ -1,0 +1,43 @@
+<div th:fragment="user-list" th:remove="tag">
+  <div class="tt-followers-list">
+    <div class="tt-list-header">
+      <div class="tt-col-value">User</div>
+      <div class="tt-col-value">Name</div>
+      <div class="tt-col-value">Email</div>
+      <div class="tt-col-value">Role</div>
+      <div class="tt-col-value">Level</div>
+    </div>
+    <div class="tt-item" th:each="user : ${users}">
+      <div class="tt-col-value">
+        <div class="tt-col-avatar">
+          <img class="user-avatar" th:src="${user.avatar != null ? user.avatar : '/images/person-placeholder.png'}"/>
+        </div>
+      </div>
+      <div class="tt-col-value">
+        <h6 class="tt-title"><a th:href="@{'/users/' + ${user.id}}" th:text="${user.name}"></a></h6>
+      </div>
+      <div class="tt-col-value">
+        <a th:href="'mailto:' + ${user.email}" th:text="${user.email}"></a>
+      </div>
+
+      <div class="tt-col-value">
+        <span class="badge bg-primary" th:text="${user.role}"></span>
+      </div>
+
+      <div class="tt-col-value">
+        <ul class="tt-list-badge">
+          <li>
+            <span class="badge btn-primary" th:if="${user.memberType.toString() == 'COPPER'}">COPPER</span>
+            <span class="badge btn-secondary" th:if="${user.memberType.toString() == 'SILVER'}">SILVER</span>
+            <span class="badge btn-warning" th:if="${user.memberType.toString() == 'GOLD'}">GOLD</span>
+            <span class="badge btn-success" th:if="${user.memberType.toString() == 'DIAMOND'}">DIAMOND</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div th:if="${#lists.isEmpty(users)}">
+      <div th:replace="~{fragments/no-data :: no-data}"></div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,41 @@
+<!doctype html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default.html}">
+<body>
+<div id="page" layout:fragment="content">
+    <main>
+        <div class="container">
+            <div class="row gy-5">
+                <div class="col-lg-8">
+                    <div>
+                        <h1 class="tt-title-border">
+                            POSTS
+                        </h1>
+
+                        <h5 class="mb-5">
+                            <th:block th:if="${search != null && search != ''}">
+                                Search result for: <span th:text="${search}"></span>
+                            </th:block>
+
+                            <th:block th:if="${tag != null}">
+                                Tag: <span class="badge btn-primary" th:text="${tag}"></span>
+                            </th:block>
+
+                            <th:block th:if="${category != null}">
+                               Category: <span th:text="${category}"></span>
+                            </th:block>
+
+                        </h5>
+                        <div th:replace="~{fragments/post-list :: post-list}">Post list</div>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-5">
+                   <div th:replace="~{fragments/sidebar :: sidebar}">Side bar</div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+</body>
+</html>

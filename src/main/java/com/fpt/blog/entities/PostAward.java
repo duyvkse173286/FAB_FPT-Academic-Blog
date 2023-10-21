@@ -19,6 +19,7 @@ import java.io.Serializable;
 public class PostAward  extends BaseEntity  {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @ManyToOne

@@ -1,12 +1,11 @@
 <div th:fragment="header">
-
-    <th:block th:if="${session.loggedUser == null || session.loggedUser.role.toString() == 'STUDENT'}">
+    <div>
         <div class="create-post-icon">
             <a th:href="@{/posts/create}">
                 <ion-icon name="add-outline"></ion-icon>
             </a>
         </div>
-    </th:block>
+    </div>
 
     <nav class="panel-menu" id="mobile-menu">
         <ul>
@@ -45,22 +44,41 @@
                         <nav>
                             <ul>
                                 <th:block sec:authorize="isAnonymous()">
-                                    <li><a th:href="@{/categories}"><span>Categories</span></a></li>
+                                    <li>
+                                        <a th:href="@{/categories}"><span>Categories</span></a></li>
                                 </th:block>
                                 <th:block sec:authorize="isAuthenticated()">
                                     <th:block th:if="${session.loggedUser.role.toString() == 'ADMIN'}">
-                                        <li><a th:href="@{/admin/accounts}"><span>Accounts</span></a></li>
-                                        <li><a th:href="@{/admin/categories}"><span>Categories</span></a></li>
-                                        <li><a th:href="@{/admin/tags}"><span>Tags</span></a></li>
+
+                                        <li>
+                                            <a th:href="@{/admin/users}"><span>Users</span></a>
+                                        </li>
+                                        <li>
+                                            <a th:href="@{/admin/categories}"><span>Categories</span></a>
+                                        </li>
+                                        <li>
+                                            <a th:href="@{/admin/tags}"><span>Tags</span></a></li>
+
+                                        <li>
+                                            <a th:href="@{/posts/my-posts}"><span>My post</span></a>
+                                        </li>
+
                                     </th:block>
 
                                     <th:block th:if="${session.loggedUser.role.toString() == 'MENTOR'}">
-                                        <li><a th:href="@{/mentor/post-requests}"><span>Post request</span></a></li>
+                                        <li>
+                                            <a th:href="@{/categories}"><span>Categories</span></a></li>
+                                        <li>
+                                            <a th:href="@{/posts/my-posts}"><span>My post</span></a></li>
+                                        <li>
+                                            <a th:href="@{/mentor/post-requests}"><span>Post request</span></a></li>
                                     </th:block>
 
                                     <th:block th:if="${session.loggedUser.role.toString() == 'STUDENT'}">
-                                        <li><a th:href="@{/categories}"><span>Categories</span></a></li>
-                                        <li><a th:href="@{/posts/my-post}"><span>My post</span></a></li>
+                                        <li>
+                                            <a th:href="@{/categories}"><span>Categories</span></a></li>
+                                        <li>
+                                            <a th:href="@{/posts/my-posts}"><span>My post</span></a></li>
                                     </th:block>
                                 </th:block>
 
@@ -71,9 +89,9 @@
                     <!-- tt-search -->
                     <div class="tt-search">
                         <!-- /toggle -->
-                        <form class="search-wrapper">
+                        <form th:action="@{/posts}" class="search-wrapper">
                             <div class="search-form">
-                                <input type="text" class="tt-search__input" placeholder="Search">
+                                <input name="search" th:value="${search}" type="text" class="tt-search__input" placeholder="Search">
                                 <button class="tt-search__btn" type="submit">
                                     <ion-icon name="search-outline"></ion-icon>
                                 </button>
@@ -94,12 +112,14 @@
                 <th:block sec:authorize="isAuthenticated()">
                     <div class="col-auto ml-auto d-flex align-items-center">
                         <div class="d-flex me-2">
-                            <img class="img-fluid me-3"
-                                 th:src="${session.loggedUser.avatar != null ? session.loggedUser.avatar : '/images/person-placeholder.png'}"
-                                 style="border-radius: 50%; height: 50px; width: 50px">
+                            <a th:href="@{/users/profile}">
+                                <img class="img-fluid me-3 user-avatar"
+                                     th:src="${#authentication.principal?.user?.avatar != null ? #authentication.principal?.user?.avatar : '/images/person-placeholder.png'}"
+                                     style="border-radius: 50%; height: 50px; width: 50px">
+                            </a>
                             <div class="d-flex flex-column justify-content-center">
-                                <span th:text="${session.loggedUser.name}"></span>
-                                <p class="badge bg-primary mb-0" th:text="${session.loggedUser.role}"></p>
+                                <span th:text="${#authentication.principal?.user?.name}"></span>
+                                <p class="badge bg-primary mb-0" th:text="${#authentication.principal?.user?.role}"></p>
                             </div>
                         </div>
                         <div class="tt-account-btn">

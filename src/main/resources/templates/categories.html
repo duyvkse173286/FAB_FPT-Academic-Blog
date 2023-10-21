@@ -1,0 +1,103 @@
+
+<!doctype html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default.html}">
+<body>
+<div id="page" layout:fragment="content">
+    <main>
+        <div class="tt-custom-mobile-indent container">
+            <div class="tt-categories-title">
+                <div class="tt-title">Categories</div>
+                <div class="tt-search">
+                    <form class="search-wrapper">
+                        <div class="search-form d-flex align-items-center">
+                            <input type="text" name="search" th:value="${search}" class="tt-search__input" placeholder="Search Categories">
+                            <button class="tt-search__btn" type="submit">
+                                <ion-icon name="search-outline"></ion-icon>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="tt-categories-list">
+                <div th:if="${#lists.isEmpty(categories)}">
+                    <div th:replace="~{fragments/no-data :: no-data}">No data</div>
+                </div>
+                <div>
+                    <h6 class="pt-5 d-flex align-items-center">
+                        <ion-icon class="me-2" name="settings-outline"></ion-icon>
+                        OPERATING
+                    </h6>
+                    <div class="row">
+                        <div class="col-md-6 col-lg-4" th:each="category: ${categories.?[collection.toString() == 'OPERATING']}">
+                            <div th:replace="~{fragments/category :: category}" th:with="category=${category}"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h6 class="pt-5 d-flex align-items-center">
+                        <ion-icon class="me-2" name="document-text-outline"></ion-icon>
+                        DOCUMENT
+                    </h6>
+                    <div class="row">
+                        <div class="col-md-6 col-lg-4" th:each="category: ${categories.?[collection.toString() == 'DOCUMENT']}">
+                            <div th:replace="~{fragments/category :: category}" th:with="category=${category}"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h6 class="pt-5 d-flex align-items-center">
+                        <ion-icon class="me-2" name="help-circle-outline"></ion-icon>
+                        FAP
+                    </h6>
+                    <div class="row">
+                        <div class="col-md-6 col-lg-4" th:each="category: ${categories.?[collection.toString() == 'FAP']}">
+                            <div th:replace="~{fragments/category :: category}" th:with="category=${category}"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h6 class="pt-5 d-flex align-items-center">
+                        <ion-icon class="me-2" name="people-outline"></ion-icon>
+                        COMMUNITY
+                    </h6>
+                    <div class="row">
+                        <div class="col-md-6 col-lg-4" th:each="category: ${categories.?[collection.toString() == 'COMMUNITY']}">
+                            <div th:replace="~{fragments/category :: category}" th:with="category=${category}"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h6 class="pt-5 d-flex align-items-center">
+                        <ion-icon class="me-2" name="wallet-outline"></ion-icon>
+                        BUSINESS
+                    </h6>
+                    <div class="row">
+                        <div class="col-md-6 col-lg-4" th:each="category: ${categories.?[collection.toString() == 'BUSINESS']}">
+                            <div th:replace="~{fragments/category :: category}" th:with="category=${category}"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h6 class="pt-5 d-flex align-items-center">
+                        <ion-icon class="me-2" name="copy-outline"></ion-icon>
+                        OTHER
+                    </h6>
+                    <div class="row">
+                        <div class="col-md-6 col-lg-4" th:each="category: ${categories.?[collection.toString() == 'OTHER']}">
+                            <div th:replace="~{fragments/category :: category}" th:with="category=${category}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</div>
+</body>
+</html>

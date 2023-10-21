@@ -3,74 +3,139 @@
       layout:decorate="~{layouts/default.html}">
 <body>
 <div id="page" layout:fragment="content">
-  <main>
-    <div class="container">
-      <h1 class="tt-title-border">
-        POST REQUESTS
-      </h1>
+    <main>
+        <div class="container">
+            <h1 class="tt-title-border">
+                POST REQUESTS
+            </h1>
 
-      <div class="card">
-        <table class="table ">
-          <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Title</th>
-            <th scope="col">Category</th>
-            <th scope="col">Tags</th>
-            <th scope="col">User</th>
-            <th scope="col">Created At</th>
-            <th scope="col">Actions</th>
-          </tr>
-          </thead>
-          <tbody>
-            <tr th:each="post, index: ${posts}">
-              <td th:text="${index.index + 1}"></td>
-              <td th:text="${post.title}"></td>
-              <td th:text="${post.category?.name}"></td>
+            <div class="card p-3">
+                <table class="table table-responsive">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Tags</th>
+                        <th scope="col">User</th>
+                        <th scope="col">Created At</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="post, index: ${posts}">
+                        <td th:text="${index.index + 1}"></td>
+                        <td>
+                            <a th:href="@{'/posts/' + ${post.id}}" th:text="${post.title}"></a>
+                        </td>
+                        <td th:text="${post.category?.name}"></td>
 
-              <td>
-                <p class="badge bg-primary" th:each="tag: ${post.tags}">
-                  [[${tag.name}]]
-                </p>
-              </td>
+                        <td>
+                            <span class="badge bg-primary d-inline-block me-1" th:each="tag: ${post.tags}">
+                                [[${tag.name}]]
+                            </span>
+                        </td>
 
-              <td th:text="${post.user.name}"></td>
-<!--              <td th:text="${#dates.format(post.createdAt, 'dd/MM/yy HH:mm:ss')}"></td>-->
-              <td style="width: 300px" class="row">
-                <a class="col-md-6 btn btn-secondary" th:href="@{/mentor/approve-post}">
-                  Approved
-                </a>
-                <a class="col-md-6 btn btn-danger" th:href="@{/mentor/reject-post}">
-                  Reject
-                </a>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+                        <td th:text="${post.user.name}"></td>
+                        <td th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                        <td>
+                            <div class="row gx-1" style="gap: 5px">
+                                <a data-bs-toggle="modal" th:data-bs-target="'#approveModal' + ${post.id}" class="col w-100 btn btn-success">
+                                    Approved
+                                </a>
+
+                                <!-- Modal approved -->
+                                <div class="modal fade" th:id="'approveModal' + ${post.id}" data-bs-backdrop="static"
+                                     data-bs-keyboard="false" tabindex="-1" aria-labelledby="approveModalTitle"
+                                     aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <form method="post" th:action="@{/mentor/approve-post}">
+                                            <div class="modal-content">
+                                                <input type="hidden" name="postId" th:value="${post.id}">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="approveModalTitle">Approve post
+                                                        request</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body w-100">
+                                                    <div>
+                                                        <p><strong>Post: </strong> [[${post.title}]] </p>
+                                                        <label for="inputState" class="form-label">
+                                                            <ion-icon name="trophy-outline"></ion-icon>
+                                                            <span>Choose awards</span>
+                                                        </label>
+                                                        <select id="inputState" class="form-select" multiple name="awardIds">
+                                                            <option th:value="${award.id}" th:each="award: ${awards}">
+                                                                [[${award.name}]]
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-outline-danger"
+                                                            data-bs-dismiss="modal">Close
+                                                    </button>
+                                                    <button type="submit" class="btn btn-success">Approve</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
 
 
-<!--        <div class="tt-item tt-item-popup">-->
-<!--          <div class="tt-col-avatar">-->
-<!--            <svg class="tt-icon">-->
-<!--              <use xlink:href="#icon-ava-f"></use>-->
-<!--            </svg>-->
-<!--          </div>-->
-<!--          <div class="tt-col-message">-->
-<!--            Looks like you are new here. Register for free, learn and contribute.-->
-<!--          </div>-->
-<!--          <div class="tt-col-btn">-->
-<!--            <button type="button" class="btn btn-primary">Log in</button>-->
-<!--            <button type="button" class="btn btn-secondary">Sign up</button>-->
-<!--            <button type="button" class="btn-icon">-->
-<!--              <svg class="tt-icon">-->
-<!--                <use xlink:href="#icon-cancel"></use>-->
-<!--              </svg>-->
-<!--            </button>-->
-<!--          </div>-->
-<!--        </div>-->
-    </div>
-  </main>
+                                <a class="col w-100 btn btn-danger" th:href="@{/mentor/reject-post}"
+                                   data-bs-toggle="modal" th:data-bs-target="'#rejectModal' + ${post.id}">
+                                    Reject
+                                </a>
+
+                                <!-- Modal -->
+                                <div class="modal fade" th:id="'rejectModal' + ${post.id}" data-bs-backdrop="static"
+                                     data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalTitle"
+                                     aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <form method="post" th:action="@{/mentor/reject-post}">
+                                            <div class="modal-content">
+                                                <input type="hidden" name="postId" th:value="${post.id}">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Reject post
+                                                        request</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body w-100">
+                                                    <p><strong>Post: </strong> [[${post.title}]] </p>
+
+                                                    <div>
+                                                        <label for="reason" class="form-label">
+                                                            <ion-icon name="close-circle-outline"></ion-icon>
+                                                            <span>Reject reason</span>
+                                                        </label>
+                                                        <textarea id="reason" class="form-control" name="reason" rows="6"></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-outline-danger"
+                                                            data-bs-dismiss="modal">Close
+                                                    </button>
+                                                    <button type="submit" class="btn btn-danger">Reject</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <th:block th:if="${#lists.isEmpty(posts)}">
+                    <div th:replace="~{fragments/no-data :: no-data}">No data</div>
+                </th:block>
+            </div>
+        </div>
+    </main>
 </div>
 </body>
 </html>

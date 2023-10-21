@@ -1,0 +1,290 @@
+<!doctype html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{layouts/default.html}">
+<body>
+<main id="page" layout:fragment="content">
+    <div class="container">
+        <div class="">
+            <div class="tt-single-topic-list" sec:authorize="isAuthenticated()">
+                <div class="tt-item mb-3 p-4" th:if="${#authentication.principal?.user?.id == post.user?.id}">
+                    <div class="tt-item-info">
+                        <div class="post-detail-actions mb-2 d-flex align-items-center justify-content-between">
+                            <p>
+                                Status:
+
+                                <th:block th:if="${post.status.toString() == 'WAITING'}">
+                                    <span class="badge btn-secondary">Waiting</span>
+                                </th:block>
+
+                                <th:block th:if="${post.status.toString() == 'APPROVED'}">
+                                    <span class="badge btn-success">Approved</span>
+                                </th:block>
+
+                                <th:block th:if="${post.status.toString() == 'REJECTED'}">
+                                    <span class="badge btn-danger">REJECTED</span>
+                                </th:block>
+                            </p>
+                            <div>
+                                <a th:href="@{'/posts/' + ${post.id} + '/update'}" class="btn btn-secondary">
+                                    <ion-icon class="me-1" name="create-outline"></ion-icon>
+                                    Update
+                                </a>
+                                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#removeModal">
+                                    <ion-icon class="me-1" name="trash-bin-outline"></ion-icon>
+                                    Delete
+                                </button>
+                                <div class="modal fade" id="removeModal" data-bs-backdrop="static"
+                                     data-bs-keyboard="false"
+                                     tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <form method="post" th:action="@{'/posts/' + ${post.id} + '/delete'}">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="staticBackdropLabel">Delete post
+                                                        confirmation</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Are you sure to delete post [[${post.id}]]?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-outline-danger"
+                                                            data-bs-dismiss="modal">Close
+                                                    </button>
+                                                    <button type="submit" class="btn btn-secondary">Confirm</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div th:if="${post.status.toString() == 'REJECTED'}">
+                            Reject reason:
+                            <span th:text="${post.rejectReason}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tt-single-topic-list">
+                <div class="tt-item">
+                    <div class="tt-single-topic">
+                        <div class="tt-item-header">
+                            <div class="tt-item-info info-top">
+                                <div class="tt-avatar-icon">
+                                    <img class="avatar"
+                                         th:src="${post.user?.avatar != null ?  post.user?.avatar : '/images/person-placeholder.png'}">
+                                </div>
+                                <div class="tt-avatar-title">
+                                    <a th:href="@{'/users/' + ${post.user?.id}}" th:text="${post.user?.name}"
+                                       class="me-2"></a>
+                                    <span class="badge btn-warning" th:text="${post.user?.role}"></span>
+                                </div>
+                                <a href="#" class="tt-info-time d-flex align-items-center">
+                                    <ion-icon name="alarm-outline"></ion-icon>
+                                    <span th:text="${#temporals.format(post.createdAt, 'dd/MM/yyyy HH:mm:ss')}"></span>
+                                </a>
+                            </div>
+                            <h3 class="tt-item-title">
+                                <p th:text="${post.title}"></p>
+                            </h3>
+                            <div class="tt-item-tag">
+                                <a th:href="@{'/posts?categoryId=' + ${post.category?.id}}"
+                                   th:text="${post.category?.name}"></a>
+                            </div>
+                        </div>
+                        <div class="tt-item-description post-detail-content">
+                            <div th:utext="${post.content}">
+                            </div>
+                        </div>
+                        <div class="tt-item-info info-bottom post-detail-reactions">
+                            <div href="#" class="tt-icon-btn post-detail-reaction-item">
+                                <form th:action="@{${liked == true ? '/posts/' + post.id + '/remove-reactions?type=LIKE' : '/posts/' + post.id + '/reactions?type=LIKE'}}"
+                                      method="post">
+                                    <button th:disabled="${post.status.toString() != 'APPROVED'}" type="submit"
+                                            th:class="'btn ' + ${liked == true ? 'btn-secondary'  : 'btn-outline-secondary'} + ' reaction-icon'">
+                                        <ion-icon name="thumbs-up-outline"></ion-icon>
+                                    </button>
+                                </form>
+                                <span th:text="${likeCount}"></span>
+                            </div>
+                            <div href="#" class="tt-icon-btn post-detail-reaction-item">
+                                <form th:action="@{${disliked == true ? '/posts/' + post.id + '/remove-reactions?type=DISLIKE' : '/posts/' + post.id + '/reactions?type=DISLIKE'}}"
+                                      method="post">
+
+                                    <button th:disabled="${post.status.toString() != 'APPROVED'}" type="submit"
+                                            th:class="'btn ' + ${disliked == true ? 'btn-secondary'  : 'btn-outline-secondary'} + ' reaction-icon'">
+                                        <ion-icon name="thumbs-down-outline"></ion-icon>
+                                    </button>
+                                </form>
+                                <span th:text="${dislikeCount}"></span>
+                            </div>
+                            <div href="#" class="tt-icon-btn post-detail-reaction-item">
+                                <form th:action="@{${loved == true ? '/posts/' + post.id + '/remove-reactions?type=LOVE' : '/posts/' + post.id + '/reactions?type=LOVE'}}"
+                                      method="post">
+                                    <button th:disabled="${post.status.toString() != 'APPROVED'}" type="submit"
+                                            th:class="'btn ' + ${loved == true ? 'btn-secondary'  : 'btn-outline-secondary'} + ' reaction-icon'">
+                                        <ion-icon name="heart-outline"></ion-icon>
+                                    </button>
+                                </form>
+                                <span th:text="${loveCount}"></span>
+                            </div>
+                            <div href="#" class="tt-icon-btn post-detail-reaction-item" style="margin-left: auto">
+                                <span class="reaction-icon">
+                                    <ion-icon name="eye-outline"></ion-icon>
+                                </span>
+                                <span th:text="${post.viewCount}"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tt-topic-list" sec:authorize="isAnonymous()">
+                    <div class="tt-item tt-item-popup">
+                        <div class="tt-col-message">
+                            Please login to react or comment on this post.
+                        </div>
+                        <div class="tt-col-btn">
+                            <a th:href="@{/auth/login}" class="btn btn-primary">Login</a>
+                            <a th:href="@{/auth/signup}" class="btn btn-secondary">Signup</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tt-item">
+                    <div class="tt-info-box">
+                        <h3 class="tt-title">
+                            <ion-icon class="me-2" name="pricetags-outline"></ion-icon>
+                            Tags
+                        </h3>
+                        <div>
+                            <div class="post-detail-tags">
+                                <a th:each="tag: ${post.tags}" class="badge btn-primary"
+                                   th:href="@{'/posts?tag=' + ${tag.name}}" th:text="${tag.name}"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <th:block th:if="${not #lists.isEmpty(post.awards)}">
+                    <div class="tt-item">
+                        <div class="tt-info-box">
+                            <h3 class="tt-title">
+                                <ion-icon class="me-2" name="trophy-outline"></ion-icon>
+                                Awards
+                            </h3>
+                            <div>
+                                <div th:each="award: ${post.awards}">
+                                    <div class="row post-detail-award">
+                                        <div class="col-2">
+                                            <img th:src="${award.image}"/>
+                                        </div>
+                                        <div class="col-10">
+                                            <span th:text="${award.name}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
+
+                <div class="tt-item">
+                    <div class="tt-info-box">
+                        <h3 class="tt-title">
+                            <ion-icon class="me-2" name="chatbubbles-outline"></ion-icon>
+                            <span th:text="'Comments (' + ${#lists.size(comments)} + ')'"></span>
+                        </h3>
+                    </div>
+                </div>
+
+                <div th:replace="~{fragments/comment :: comments}" th:with="comments=${comments},post=${post}">
+                    Comments
+                </div>
+            </div>
+            <div class="tt-wrapper-inner">
+                <h4 class="tt-title-separator"><span>You’ve reached the end of replies</span></h4>
+            </div>
+
+            <div th:if="${post.commentEnabled == true && post.status.toString() == 'APPROVED'}">
+                <form method="post" th:action="@{'/posts/' + ${post.id} + '/comments'}" class="pt-editor form-default">
+                    <h6 class="pt-title">Post Your Comment</h6>
+                    <div class="form-group">
+                        <textarea required name="content" class="form-control" rows="5"
+                                  placeholder="Lets get started"></textarea>
+                    </div>
+                    <div class="pt-row">
+                        <div class="col-auto ms-auto">
+                            <button type="submit" class="btn btn-secondary btn-width-lg">Reply</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div th:if="${post.commentEnabled == false}">
+                <p class="text-center">Comments feature is not enabled</p>
+            </div>
+        </div>
+    </div>
+    <!--    <script type="text/javascript" th:inline="javascript">-->
+
+    <!--        let postId = [[${post.id}]];-->
+
+    <!--        $(document).ready(function () {-->
+    <!--            $('.reaction-icon').each(function() {-->
+
+    <!--                let icon = $(this);-->
+    <!--                let type = icon.attr("type");-->
+    <!--                icon.click(function() {-->
+    <!--                    if (icon.hasClass('active')) {-->
+    <!--                        removeReaction(postId, type, icon);-->
+    <!--                    } else {-->
+    <!--                        reactPost(postId, type, icon);-->
+    <!--                    }-->
+    <!--                })-->
+    <!--            })-->
+    <!--        })-->
+
+    <!--        function reactPost(postId, type, icon) {-->
+    <!--            $.ajax({-->
+    <!--                type: 'POST',-->
+    <!--                contentType: 'application/json',-->
+    <!--                url: `/posts/${postId}/reactions?type=${type}`,-->
+    <!--                success: function(data) {-->
+    <!--                    if (data && data.success) {-->
+    <!--                        icon.addClass('active');-->
+    <!--                    }-->
+    <!--                    console.log(data);-->
+    <!--                },-->
+
+    <!--                error: function (err) {-->
+    <!--                    console.log("Error", err)-->
+    <!--                }-->
+    <!--            })-->
+    <!--        }-->
+
+    <!--        function removeReaction(post, type, icon) {-->
+    <!--            $.ajax({-->
+    <!--                type: 'DELETE',-->
+    <!--                contentType: 'application/json',-->
+    <!--                url: `/posts/${postId}/reactions?type=${type}`,-->
+    <!--                success: function(data) {-->
+    <!--                    if (data && data.success) {-->
+    <!--                        icon.removeClass('active');-->
+    <!--                    }-->
+    <!--                    console.log(data);-->
+    <!--                },-->
+
+    <!--                error: function (err) {-->
+    <!--                    console.log("Error", err)-->
+    <!--                }-->
+    <!--            })-->
+    <!--        }-->
+
+
+    <!--    </script>-->
+</main>
+</body>
+</html>
+

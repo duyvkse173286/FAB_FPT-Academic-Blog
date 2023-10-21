@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import lombok.experimental.FieldNameConstants;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -17,6 +18,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Table(name = "tag")
 @Accessors(chain = true)
+@FieldNameConstants
 public class Tag extends BaseEntity {
 
     @Id

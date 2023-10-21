@@ -1,0 +1,26 @@
+<div th:fragment="category" th:remove="tag">
+    <div>
+        <div class="tt-item">
+            <div class="w-100 d-flex align-items-center justify-content-center">
+                <img  style="height: 200px; object-fit: cover" class="img-fluid mb-4 mx-auto"
+                      th:src="${category.image != null ? category.image : 'single-topic-img01.jpg'}">
+            </div>
+            <div class="tt-item-header">
+                <ul class="tt-list-badge">
+                    <li>
+                        <a href="#"><span class="tt-color01 tt-badge" th:text="${category.collection}"></span></a>
+                    </li>
+                </ul>
+            </div>
+            <div class="tt-item-layout">
+                <div class="innerwrapper">
+                    <a th:href="@{'/posts?categoryId=' + ${category.id}}"><span th:text="${category.name}"></span>
+                    </a>
+                </div>
+                <div class="innerwrapper" th:text="${category.description}">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

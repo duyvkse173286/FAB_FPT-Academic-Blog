@@ -8,69 +8,19 @@
             <h1 class="tt-title-border">
                 CREATE NEW POST
             </h1>
-            <form class="form-default form-create-topic" method="post" >
+            <form class="form-default form-create-topic" method="post" enctype="multipart/form-data">
                 <div class="form-group mb-3 required">
                     <label for="title">Post Title</label>
-                    <input required type="text" name="title" class="form-control" id="title" th:value="${title}"
+                    <input autofocus required type="text" name="title" class="form-control" id="title"
+                           th:value="${title}"
                            placeholder="Subject of your post">
                     <div class="tt-note">Describe your post well, while keeping the subject as short as possible.</div>
                 </div>
 
-                <!--                Collection-->
                 <div class="form-group mb-3">
-                    <label>Post collection</label>
-                    <div class="tt-js-active-btn tt-wrapper-btnicon">
-                        <div class="row tt-w410-col-02">
-                            <div class="col-4 col-lg-3 col-xl-2">
-                                <a href="#" class="tt-button-icon">
-                                    <span class="tt-icon collection-icon">
-                                      <ion-icon name="settings-outline"></ion-icon>
-                                    </span>
-                                    <span class="tt-text">Vận hành</span>
-                                </a>
-                            </div>
-                            <div class="col-4 col-lg-3 col-xl-2">
-                                <a href="#" class="tt-button-icon">
-                                    <span class="tt-icon collection-icon">
-                                         <ion-icon name="document-text-outline"></ion-icon>
-                                    </span>
-                                    <span class="tt-text">Tài liệu</span>
-                                </a>
-                            </div>
-                            <div class="col-4 col-lg-3 col-xl-2">
-                                <a href="#" class="tt-button-icon">
-                                    <span class="tt-icon collection-icon">
-                                         <ion-icon name="help-outline"></ion-icon>
-                                    </span>
-                                    <span class="tt-text">Hỏi đáp</span>
-                                </a>
-                            </div>
-                            <div class="col-4 col-lg-3 col-xl-2">
-                                <a href="#" class="tt-button-icon">
-                                    <span class="tt-icon collection-icon">
-                                        <ion-icon name="people-outline"></ion-icon>
-                                    </span>
-                                    <span class="tt-text">Cộng đồng</span>
-                                </a>
-                            </div>
-                            <div class="col-4 col-lg-3 col-xl-2">
-                                <a href="#" class="tt-button-icon">
-                                    <span class="tt-icon collection-icon">
-                                        <ion-icon name="settings-outline"></ion-icon>
-                                    </span>
-                                    <span class="tt-text">Kinh doanh</span>
-                                </a>
-                            </div>
-                            <div class="col-4 col-lg-3 col-xl-2">
-                                <a href="#" class="tt-button-icon">
-                                    <span class="tt-icon collection-icon">
-                                        <ion-icon name="document-attach-outline"></ion-icon>
-                                    </span>
-                                    <span class="tt-text">Khác</span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+                    <label for="thumbnail">Thumbnail</label>
+                    <input type="file" id="thumbnail" name="thumbnail" class="form-control"
+                           accept="image/png, image/gif, image/jpeg">
                 </div>
 
                 <!--                Category-->
@@ -79,8 +29,9 @@
                         <div class="form-group required">
                             <label for="category">Category</label>
                             <select class="form-control" required id="category" name="categoryId">
-                                <option th:each="cate: ${categories}" th:value="${cate.id}" th:checked="${categoryId == cate.id}">
-                                    [[${cate.name}]]
+                                <option th:each="cate: ${categories}" th:value="${cate.id}"
+                                        th:checked="${categoryId == cate.id}">
+                                    [[${cate.collection}]] - [[${cate.name}]]
                                 </option>
                             </select>
                         </div>
@@ -94,12 +45,24 @@
                     </div>
                 </div>
 
+                <div class="form-group">
+                    <label for="description">Short Description</label>
+                    <textarea id="description" name="description" class="form-control" rows="5"
+                              placeholder="Lets get started">[[${description}]]</textarea>
+                </div>
                 <!--                Cotent-->
                 <div class="form-group required">
                     <label for="content">Content</label>
-                    <textarea required id="content" name="content" class="form-control" rows="5"
+                    <textarea id="content" name="content" class="form-control" rows="5"
                               placeholder="Lets get started">[[${content}]]</textarea>
                 </div>
+
+                <div class="form-check form-group form-switch mb-3">
+                    <input value="true" class="form-check-input" type="checkbox" id="commentEnabled"
+                           name="commentEnabled" th:checked="${commentEnabled == true}">
+                    <label class="form-check-label" for="commentEnabled"> Comment enabled</label>
+                </div>
+
                 <div class="row">
                     <div class="col-auto ml-md-auto">
                         <button type="submit" class="btn btn-secondary btn-width-lg">Create Post</button>
@@ -108,6 +71,15 @@
             </form>
         </div>
     </div>
+
+    <script>
+        tinymce.init({
+            selector: 'textarea#content',
+            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+        });
+    </script>
+
 </main>
 </body>
 </html>

@@ -1,0 +1,214 @@
+<!doctype html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default.html}">
+<body>
+<div id="page" class="mt-0" layout:fragment="content">
+    <main>
+        <div class="tt-wrapper-section">
+            <div class="container">
+                <h1 class="tt-title-border pt-5">
+                    MY PROFILE
+                </h1>
+                <div class="tt-user-header d-flex align-items-center mb-4">
+                    <div class="tt-col-avatar d-flex align-items-center">
+                        <div>
+                            <img class="user-avatar"
+                                 th:src="${user.avatar != null ? user.avatar : '/images/person-placeholder.png'}"/>
+                        </div>
+                    </div>
+                    <div class="tt-col-title">
+                        <div>
+                            <div class="tt-title">
+                                <a href="#" class="me-2" th:text="${user.name}"></a>
+                                <ul class="tt-list-badge">
+                                    <li>
+                                    <span class="badge btn-primary"
+                                          th:if="${user.memberType.toString() == 'COPPER'}">Member Type: COPPER</span>
+                                        <span class="badge btn-secondary"
+                                              th:if="${user.memberType.toString() == 'SILVER'}">Member Type: SILVER</span>
+                                        <span class="badge btn-warning" th:if="${user.memberType.toString() == 'GOLD'}">Member Type: GOLD</span>
+                                        <span class="badge btn-success"
+                                              th:if="${user.memberType.toString() == 'DIAMOND'}">Member Type: DIAMOND</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div th:text="${user.email}"></div>
+                            <div>
+                                <ul class="tt-list-badge">
+                                    <li>
+                                        <span class="badge btn-primary" th:text="${user.role}"></span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tt-col-btn" id="js-settings-btn">
+                        <div class="d-flex">
+                            <form method="post" th:action="@{/users/profile}" enctype="multipart/form-data">
+                                <button type="button" class="btn btn-secondary d-flex align-items-center me-2"
+                                        data-bs-toggle="modal" data-bs-target="#profileModal">
+                                    <ion-icon name="settings-outline" class="me-2"></ion-icon>
+                                    Update profile
+                                </button>
+
+                                <div class="modal fade" id="profileModal" data-bs-backdrop="static"
+                                     data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+                                     aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="staticBackdropLabel">Update profile</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+
+                                                <div class="form-group mb-3">
+                                                    <label for="avatar">Avatar</label>
+                                                    <input type="file" name="avatar"
+                                                           accept="image/png, image/gif, image/jpeg"
+                                                           class="form-control" id="avatar" th:value="${user.avatar}">
+                                                </div>
+
+
+                                                <div class="form-group required mb-3">
+                                                    <label for="email">Email</label>
+                                                    <input disabled type="email" name="email" required
+                                                           class="form-control" id="email"
+                                                           placeholder="example@gmail.com" th:value="${user.email}">
+                                                </div>
+
+                                                <div class="form-group required mb-3">
+                                                    <label for="name">Full name</label>
+                                                    <input type="text" name="name" required class="form-control"
+                                                           id="name" placeholder="Nguyen Van A" th:value="${user.name}">
+                                                </div>
+
+                                                <div class="form-group mb-3">
+                                                    <label for="phoneNumber">Phone number</label>
+                                                    <input type="tel" name="phoneNumber" class="form-control"
+                                                           id="phoneNumber" placeholder="Phone number"
+                                                           th:value="${user.phoneNumber}">
+                                                </div>
+
+                                                <div class="form-group mb-3">
+                                                    <label for="dob">Date of birth</label>
+                                                    <input type="date" name="dob" class="form-control" id="dob"
+                                                           th:value="${user.dob}">
+                                                </div>
+
+                                                <div class="form-group mb-3">
+                                                    <label for="description">Description</label>
+                                                    <textarea rows="5" name="description" class="form-control"
+                                                              id="description" placeholder="Description"
+                                                              th:text="${user.description}"></textarea>
+                                                </div>
+
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-outline-danger"
+                                                        data-bs-dismiss="modal">
+                                                    Close
+                                                </button>
+                                                <button type="submit" class="btn btn-secondary">Update</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </form>
+
+                            <form method="post" th:action="@{/users/password}">
+                                <button type="button" class="btn btn-secondary d-flex align-items-center"
+                                        data-bs-toggle="modal" data-bs-target="#passwordModal">
+                                    <ion-icon name="lock-closed-outline" class="me-2"></ion-icon>
+                                    Change password
+                                </button>
+
+                                <div class="modal fade" id="passwordModal" data-bs-backdrop="static"
+                                     data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+                                     aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Change password</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="form-group required mb-3">
+                                                    <label for="password">Password</label>
+                                                    <input autofocus type="password" name="password" required
+                                                           class="form-control" id="password"
+                                                           placeholder="************">
+                                                </div>
+                                                <div class="form-group required">
+                                                    <label for="confirmPassword">Confirm password</label>
+                                                    <input type="password" name="confirmPassword" required
+                                                           class="form-control" id="confirmPassword"
+                                                           placeholder="************">
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-outline-danger"
+                                                        data-bs-dismiss="modal">
+                                                    Close
+                                                </button>
+                                                <button type="submit" class="btn btn-secondary">Update</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="tt-tab-wrapper">
+                <div class="tt-wrapper-inner">
+                    <ul class="nav nav-tabs pt-tabs-default" role="tablist">
+                        <li class="nav-item show">
+                            <a class="active" data-toggle="tab" href="#tt-tab-01" role="tab">
+                                <span th:text="${posts.size()} + ' Posts'"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item tt-hide-xs">
+                            <a data-toggle="tab" href="#tt-tab-04" role="tab"><span
+                                    th:text="${followers.size()} + ' Followers'"></span></a>
+                        </li>
+                        <li class="nav-item tt-hide-md">
+                            <a data-toggle="tab" href="#tt-tab-05" role="tab"><span
+                                    th:text="${followings.size()} + ' Followings'"></span></a>
+                        </li>
+                        <!--                        <li class="nav-item tt-hide-md">-->
+                        <!--                            <a data-toggle="tab" href="#tt-tab-06" role="tab"><span>Categories</span></a>-->
+                        <!--                        </li>-->
+                    </ul>
+                </div>
+                <div class="tab-content">
+                    <div class="tab-pane tt-indent-none  show active" id="tt-tab-01" role="tabpanel">
+                        <div class="my-3">
+                            <div th:replace="~{fragments/post-list :: post-list}" th:with="posts=${posts}"></div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane tt-indent-none" id="tt-tab-04" role="tabpanel">
+                        <div th:insert="~{fragments/user-list :: user-list}" th:with="users=${followers}"
+                             th:remove="tag"></div>
+                    </div>
+                    <div class="tab-pane tt-indent-none" id="tt-tab-05" role="tabpanel">
+                        <div th:insert="~{fragments/user-list :: user-list}" th:with="users=${followings}"
+                             th:remove="tag"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+</div>
+</body>
+</html>

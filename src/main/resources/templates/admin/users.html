@@ -1,0 +1,345 @@
+<!doctype html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{layouts/default.html}">
+<body>
+<div id="page" layout:fragment="content">
+    <main>
+        <div class="container">
+            <h1 class="tt-title-border d-flex justify-content-between">
+                <span>USER MANAGEMENT</span>
+                <span data-bs-toggle="modal" data-bs-target="#addUserModal" style="font-size: 30px; cursor: pointer">
+                    <ion-icon name="add-circle-outline"></ion-icon>
+                </span>
+
+                <div style="overflow: auto" class="modal fade" id="addUserModal" data-bs-backdrop="static"
+                     data-bs-keyboard="false"
+                     tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form class="form-default" method="post" th:action="@{/admin/users}">
+
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="staticBackdropLabel">CREATE USER</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group required">
+                                        <label for="aRole">Role </label>
+                                        <select required class="form-control" id="aRole" name="role">
+                                            <option value="ADMIN"
+                                                    th:selected="${createRequest?.role != null && createRequest?.role?.toString() == 'ADMIN'}">
+                                                Admin
+                                            </option>
+                                            <option value="MENTOR"
+                                                    th:selected="${createRequest?.role != null && createRequest?.role?.toString() == 'MENTOR'}">
+                                                Mentor
+                                            </option>
+                                            <option value="STUDENT"
+                                                    th:selected="${createRequest?.role != null && createRequest?.role?.toString() == 'STUDENT'}">
+                                                Student
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group required">
+                                        <label for="email">Email</label>
+                                        <input type="email" name="email" th:value="${createRequest?.email}" required
+                                               class="form-control" id="email" placeholder="example@gmail.com">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="name">Full name</label>
+                                        <input type="text" name="name" class="form-control" id="name"
+                                               placeholder="Nguyen Van A" th:value="${createRequest?.name}">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="phoneNumber">Phone number</label>
+                                        <input type="tel" name="phoneNumber" class="form-control" id="phoneNumber"
+                                               placeholder="0367537876" th:value="${createRequest?.phoneNumber}">
+                                    </div>
+
+                                    <div class="form-group required">
+                                        <label for="password">Password</label>
+                                        <input type="password" name="password" required class="form-control"
+                                               id="password" placeholder="************"
+                                               th:value="${createRequest?.password}">
+                                    </div>
+                                    <div class="form-group required">
+                                        <label for="confirmPassword">Confirm password</label>
+                                        <input type="password" name="confirmPassword" required class="form-control"
+                                               id="confirmPassword" placeholder="************"
+                                               th:value="${createRequest?.confirmPassword}">
+                                    </div>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Close
+                                    </button>
+                                    <button type="submit" class="btn btn-secondary">Create</button>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+
+            </h1>
+
+            <div class="mb-5">
+                <form class="filter-form">
+                    <div class="form-group">
+                        <label for="search"> Search </label>
+                        <input type="text" id="search" th:value="${search}" name="search" placeholder="Enter to search"
+                               class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="role"> Role </label>
+                        <select class="form-select" id="role" name="role">
+                            <option value="">--</option>
+                            <option value="ADMIN" th:selected="${role != null && role.toString() == 'ADMIN'}">Admin
+                            </option>
+                            <option value="MENTOR" th:selected="${role != null && role.toString() == 'MENTOR'}">Mentor
+                            </option>
+                            <option value="STUDENT" th:selected="${role != null && role.toString() == 'STUDENT'}">
+                                Student
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="status">Status </label>
+                        <select class="form-select" id="status" name="status">
+                            <option value="">--</option>
+                            <option value="ACTIVE" th:selected="${ status != null && status.toString() == 'ACTIVE'}">
+                                Active
+                            </option>
+                            <option value="INACTIVE"
+                                    th:selected="${ status != null && status.toString() == 'INACTIVE'}">Inactive
+                            </option>
+                        </select>
+                    </div>
+
+                    <button class="btn btn-secondary" type="submit">Filter</button>
+                </form>
+
+            </div>
+            <div class="card p-3">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Avatar</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Phone number</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Role</th>
+                            <th scope="col">Member type</th>
+                            <th scope="col">Created at</th>
+                            <th scope="col">Updated at</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="user, index: ${users}">
+                            <td th:text="${index.index + 1}"></td>
+                            <td>
+                                <img class="img-fluid me-3 user-avatar"
+                                     th:src="${user?.avatar != null ? user?.avatar : '/images/person-placeholder.png'}"/>
+                            </td>
+                            <td style="min-width: 200px">
+                                <a th:text="${user.name}" th:href="@{'/users/' + ${user.id}}">
+                                </a>
+                            </td>
+                            <td style="min-width: 100px" th:text="${user.email}"></td>
+                            <td style="min-width: 200px" th:text="${user.phoneNumber}"></td>
+                            <td style="min-width: 100px">
+                                <span class="badge btn-danger"
+                                      th:if="${user.status?.toString() == 'INACTIVE'}">Inactive</span>
+                                <span class="badge btn-success"
+                                      th:if="${user.status?.toString() == 'ACTIVE'}">Active</span>
+                            </td>
+                            <td style="min-width: 100px">
+                                <span class="badge bg-primary" th:text="${user.role}"></span>
+                            </td>
+                            <td style="min-width: 150px">
+                                <span class="badge btn-primary"
+                                      th:if="${user.memberType.toString() == 'COPPER'}">Copper</span>
+                                <span class="badge btn-secondary" th:if="${user.memberType.toString() == 'SILVER'}">Silver</span>
+                                <span class="badge btn-warning"
+                                      th:if="${user.memberType.toString() == 'GOLD'}">Gold</span>
+                                <span class="badge btn-success" th:if="${user.memberType.toString() == 'DIAMOND'}">Diamond</span>
+                            </td>
+                            <td style="min-width: 150px"
+                                th:text="${#temporals.format(user.createdAt, 'dd/MM/yyyy HH:mm:ss')}"></td>
+                            <td style="min-width: 150px"
+                                th:text="${#temporals.format(user.updatedAt, 'dd/MM/yyyy HH:mm:ss')}"></td>
+                            <td>
+                                <div sec:authorize="isAuthenticated()" th:if="${#authentication.principal?.user?.id != user.id}">
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        <div>
+                                            <div th:if="${user.status.toString() == 'ACTIVE'}">
+                                                <form th:action="@{'/admin/users/' + ${user.id} + '/status?status=INACTIVE'}"
+                                                      method="post">
+                                                    <button type="button" class="btn btn-danger"
+                                                            data-bs-toggle="modal"
+                                                            th:data-bs-target="'#inactiveModal' + ${user.id}">
+                                                        <span>Inactive</span>
+                                                    </button>
+
+                                                    <div class="modal fade" th:id="'inactiveModal' + ${user.id}"
+                                                         data-bs-backdrop="static"
+                                                         data-bs-keyboard="false" tabindex="-1"
+                                                         aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title">Inactive confirmation</h5>
+                                                                    <button type="button" class="btn-close"
+                                                                            data-bs-dismiss="modal"
+                                                                            aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    Are you sure to inactive user [[${user.name}]]?
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-outline-danger"
+                                                                            data-bs-dismiss="modal">Close
+                                                                    </button>
+                                                                    <button type="submit" class="btn btn-secondary">Confirm
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <div th:if="${user.status.toString() == 'INACTIVE'}">
+                                                <form th:action="@{'/admin/users/' + ${user.id} + '/status?status=ACTIVE'}"
+                                                      method="post">
+                                                    <button type="button" class="btn btn-success"
+                                                            data-bs-toggle="modal"
+                                                            th:data-bs-target="'#activeModal' + ${user.id}">
+                                                        <span>Active</span>
+                                                    </button>
+
+                                                    <div class="modal fade" th:id="'activeModal' + ${user.id}"
+                                                         data-bs-backdrop="static"
+                                                         data-bs-keyboard="false" tabindex="-1"
+                                                         aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title">Active confirmation</h5>
+                                                                    <button type="button" class="btn-close"
+                                                                            data-bs-dismiss="modal"
+                                                                            aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    Are you sure to active user [[${user.name}]]?
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-outline-danger"
+                                                                            data-bs-dismiss="modal">Close
+                                                                    </button>
+                                                                    <button type="submit" class="btn btn-secondary">Confirm
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <button class="btn btn-primary ms-2" data-bs-toggle="modal" th:data-bs-target="'#updateModal'+ ${user.id}"  >
+                                                Update
+                                            </button>
+                                            <div style="overflow: auto" class="modal fade" th:id="'updateModal'+ ${user.id}" data-bs-backdrop="static"
+                                                 data-bs-keyboard="false"
+                                                 tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <form class="form-default" method="post" th:action="@{'/admin/users/' + ${user.id} + '/update'}">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">UPDATE USER</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                        aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <div class="form-group required">
+                                                                    <label for="aRole">Role </label>
+                                                                    <select required class="form-control" id="uRole" name="role">
+                                                                        <option value="ADMIN"
+                                                                                th:selected="${user?.role != null && user?.role?.toString() == 'ADMIN'}">
+                                                                            Admin
+                                                                        </option>
+                                                                        <option value="MENTOR"
+                                                                                th:selected="${user?.role != null && user?.role?.toString() == 'MENTOR'}">
+                                                                            Mentor
+                                                                        </option>
+                                                                        <option value="STUDENT"
+                                                                                th:selected="${user?.role != null && user?.role?.toString() == 'STUDENT'}">
+                                                                            Student
+                                                                        </option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="form-group required">
+                                                                    <label for="email">Email</label>
+                                                                    <input disabled type="uEmail" name="email" th:value="${user?.email}" required
+                                                                           class="form-control" id="uEmail" placeholder="example@gmail.com">
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label for="uname">Full name</label>
+                                                                    <input type="text" name="name" class="form-control" id="uname"
+                                                                           placeholder="Nguyen Van A" th:value="${user?.name}">
+                                                                </div>
+
+                                                                <div class="form-group">
+                                                                    <label for="uphoneNumber">Phone number</label>
+                                                                    <input type="tel" name="phoneNumber" class="form-control" id="uphoneNumber"
+                                                                           placeholder="0367537876" th:value="${user?.phoneNumber}">
+                                                                </div>
+
+                                                                <div class="form-group">
+                                                                    <label for="upassword">Password</label>
+                                                                    <input type="password" name="password" class="form-control"
+                                                                           id="upassword" placeholder="************"
+                                                                           th:value="${updatePassword}">
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label for="uconfirmPassword">Confirm password</label>
+                                                                    <input type="password" name="confirmPassword" class="form-control"
+                                                                           id="uconfirmPassword" placeholder="************"
+                                                                           th:value="${updateConfirmPassword}">
+                                                                </div>
+
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Close
+                                                                </button>
+                                                                <button type="submit" class="btn btn-secondary">Update</button>
+                                                            </div>
+                                                        </form>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <th:block th:if="${#lists.isEmpty(users)}">
+                    <div th:replace="~{fragments/no-data :: no-data}">No data</div>
+                </th:block>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

@@ -14,6 +14,7 @@ import org.hibernate.annotations.FetchMode;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -36,6 +37,8 @@ public class Post extends BaseEntity {
 
     private String title;
 
+    private String thumbnail;
+
     @Column(columnDefinition = "text")
     private String content;
 
@@ -50,15 +53,15 @@ public class Post extends BaseEntity {
 
     private LocalDateTime approvedAt;
 
-    private LocalDateTime deniedAt;
+    private LocalDateTime rejectedAt;
 
-    private String deniedReason;
+    private String rejectReason;
 
     private Boolean commentEnabled;
 
     private int viewCount;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     @Fetch(FetchMode.SELECT)
     @BatchSize(size = 50)
     private Set<Reaction> reactions = new HashSet<>();
@@ -73,8 +76,12 @@ public class Post extends BaseEntity {
     @BatchSize(size = 50)
     private Set<Tag> tags = new HashSet<>();
 
-    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
-    private Set<Media> medias = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name = "review_by")
+    private User reviewBy;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostAward> awards;
 
 
 }

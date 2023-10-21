@@ -1,8 +1,10 @@
 package com.fpt.blog.models.post.response;
 
-import com.fpt.blog.entities.Tag;
 import com.fpt.blog.enums.PostStatus;
+import com.fpt.blog.models.adward.response.AwardResponse;
 import com.fpt.blog.models.category.response.CategoryResponse;
+import com.fpt.blog.models.reaction.response.ReactionResponse;
+import com.fpt.blog.models.tag.TagResponse;
 import com.fpt.blog.models.user.response.UserResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,6 +13,7 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -19,11 +22,14 @@ import java.util.Set;
 @NoArgsConstructor
 public class PostResponse {
 
+
     private long id;
 
     private CategoryResponse category;
 
     private String title;
+
+    private String thumbnail;
 
     private String content;
 
@@ -31,23 +37,29 @@ public class PostResponse {
 
     private UserResponse user;
 
-    private PostStatus status = PostStatus.WAITING;
+    private PostStatus status;
 
     private LocalDateTime approvedAt;
 
-    private LocalDateTime deniedAt;
+    private LocalDateTime rejectedAt;
 
-    private String deniedReason;
+    private String rejectReason;
 
     private Boolean commentEnabled;
 
     private int viewCount;
 
-    private Set<Tag> tags = new HashSet<>();
+    private Set<TagResponse> tags = new HashSet<>();
+
+    private UserResponse reviewBy;
 
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    private List<AwardResponse> awards;
+
+    private List<ReactionResponse> reactions;
 
 
 }

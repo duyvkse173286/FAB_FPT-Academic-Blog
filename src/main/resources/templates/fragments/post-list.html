@@ -1,0 +1,44 @@
+<div th:fragment="post-list" th:remove="tag" >
+  <div class="post-list">
+    <!--/*@thymesVar id="posts" type="com.fpt.blog.models.post.response.PostResponse"*/-->
+    <div th:if="${#lists.isEmpty(posts)}">
+      <div th:replace="~{fragments/no-data :: no-data}">No data</div>
+    </div>
+    <div class="post-item card mb-3" th:each="post: ${posts}">
+      <div class="row">
+        <div class="col-4">
+          <img class="post-item-thumbnail" th:src="${post?.thumbnail != null ? post?.thumbnail : '/images/single-topic-img01.jpg'}"/>
+        </div>
+        <div class="col-8">
+          <div class="post-item-meta">
+            <a th:href="@{'/posts/' + ${post?.id}}">
+              <h5 class="post-item-title" th:text="${post?.title}"></h5>
+            </a>
+            <span class="post-item-description" th:text="${post?.description}"></span>
+            <p class="post-item-category">
+              <a th:href="@{'posts?categoryId=' + ${post?.category?.id}}"><span th:text="${post?.category?.name}"> </span></a> | Đăng bởi <a th:href="@{'users/' + ${post?.user?.id}}"><span th:text="${post?.user?.name}"></span></a>
+            </p>
+            <p class="post-item-tags">
+              <a th:each="tag: ${post?.tags}" th:href="@{'/posts?tag=' + ${tag?.name}}">
+                <span class="badge bg-primary" th:text="${tag?.name}"></span></a>
+            </p>
+            <p class="post-item-time" th:text="${#temporals.format(post?.createdAt, 'dd/MM/yyyy HH:mm:ss')}"></p>
+
+            <th:block th:if="${post.status.toString() == 'WAITING'}">
+              <span  class="post-item-status badge btn-secondary">Waiting</span>
+            </th:block>
+
+            <th:block th:if="${post.status.toString() == 'APPROVED'}">
+              <span class="post-item-status badge btn-success">Approved</span>
+            </th:block>
+
+            <th:block th:if="${post.status.toString() == 'REJECTED'}">
+              <span class="post-item-status badge btn-danger">REJECTED</span>
+            </th:block>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

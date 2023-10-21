@@ -1,0 +1,26 @@
+<!doctype html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default.html}">
+<body>
+<div id="page" layout:fragment="content">
+    <main>
+        <div class="container">
+            <div class="row gy-5">
+                <div class="col-lg-8">
+                    <div>
+                        <h1 class="tt-title-border">
+                            MY POSTS
+                        </h1>
+                        <div th:replace="~{fragments/post-list :: post-list}">Post list</div>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-5">
+                   <div th:replace="~{fragments/sidebar :: sidebar}">Side bar</div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+</body>
+</html>

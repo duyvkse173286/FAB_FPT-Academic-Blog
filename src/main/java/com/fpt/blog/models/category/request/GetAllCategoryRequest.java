@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Accessors(chain = true)
 public class GetAllCategoryRequest implements BaseFilterRequest<Category> {
 
     private String search;
@@ -30,7 +32,7 @@ public class GetAllCategoryRequest implements BaseFilterRequest<Category> {
             List<Predicate> predicates = new ArrayList<>();
 
             if (search != null && !search.isBlank()) {
-                predicates.add(cb.like(root.get(Category.Fields.name), "%" + search.trim() + ""));
+                predicates.add(cb.like(cb.lower(root.get(Category.Fields.name)), "%" + search.trim().toLowerCase() + "%"));
             }
 
             if (collection != null) {

@@ -18,7 +18,7 @@ public interface UserMapper {
     UserResponse toResponse(User user);
 
     @Named("passwordMapper")
-    public static String passwordMapper(String password) {
+    static String passwordMapper(String password) {
         PasswordEncoder encoder = new BCryptPasswordEncoder();
         return encoder.encode(password);
     }

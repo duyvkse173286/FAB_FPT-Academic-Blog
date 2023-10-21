@@ -1,0 +1,125 @@
+<!doctype html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{layouts/default.html}">
+<body>
+<div id="page" class="mt-0" layout:fragment="content">
+    <main>
+        <div class="tt-wrapper-section">
+            <div class="container">
+                <div class="tt-user-header d-flex align-items-center mb-5">
+                    <div class="tt-col-avatar d-flex align-items-center">
+                        <div>
+                            <img class="user-avatar"
+                                 th:src="${user.avatar != null ? user.avatar : '/images/person-placeholder.png'}"/>
+                        </div>
+                    </div>
+                    <div class="tt-col-title">
+                        <div>
+                            <div class="tt-title">
+                                <a href="#" class="me-2" th:text="${user.name}"></a>
+                                <ul class="tt-list-badge">
+                                    <li>
+                                        <span class="badge btn-primary"
+                                              th:if="${user.memberType.toString() == 'COPPER'}">Member Type: COPPER</span>
+                                        <span class="badge btn-secondary"
+                                              th:if="${user.memberType.toString() == 'SILVER'}">Member Type: SILVER</span>
+                                        <span class="badge btn-warning" th:if="${user.memberType.toString() == 'GOLD'}">Member Type: GOLD</span>
+                                        <span class="badge btn-success"
+                                              th:if="${user.memberType.toString() == 'DIAMOND'}">Member Type: DIAMOND</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div th:text="${user.email}">
+                            </div>
+
+                            <div>
+                                <ul class="tt-list-badge">
+                                    <li>
+                                        <span class="badge btn-primary" th:text="${user.role}"></span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            </p>
+                        </div>
+                        <div class="tt-col-btn" id="js-settings-btn">
+                            <div class="tt-list-btn">
+                                <a href="#" class="tt-btn-icon">
+                                    <svg class="tt-icon">
+                                        <use xlink:href="#icon-settings_fill"></use>
+                                    </svg>
+                                </a>
+
+                                <div sec:authorize="isAuthenticated()">
+                                    <th:block th:if="${#authentication.principal?.user?.id != user?.id}">
+                                        <th:block th:if="${followed == false || followed == null}">
+                                            <form method="post" th:action="@{'/users/' + ${userId} + '/follow'}">
+                                                <button type="submit"
+                                                        class="btn btn-secondary d-flex align-items-center">
+                                                    <ion-icon name="person-add-outline" class="me-2"></ion-icon>
+                                                    Follow
+                                                </button>
+                                            </form>
+                                        </th:block>
+
+                                        <th:block th:if="${followed == true}">
+                                            <form method="post" th:action="@{'/users/' + ${userId} + '/un-follow'}">
+                                                <button type="submit" class="btn btn-danger d-flex align-items-center">
+                                                    <ion-icon name="person-remove-outline" class="me-2"></ion-icon>
+                                                    Unfollow
+                                                </button>
+                                            </form>
+                                        </th:block>
+                                    </th:block>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="tt-tab-wrapper">
+                <div class="tt-wrapper-inner">
+                    <ul class="nav nav-tabs pt-tabs-default" role="tablist">
+                        <li class="nav-item show">
+                            <a class="active" data-toggle="tab" href="#tt-tab-01" role="tab">
+                                <span th:text="${posts.size()} + ' Posts'"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item tt-hide-xs">
+                            <a data-toggle="tab" href="#tt-tab-04" role="tab"><span
+                                    th:text="${followers.size()} + ' Followers'"></span></a>
+                        </li>
+                        <li class="nav-item tt-hide-md">
+                            <a data-toggle="tab" href="#tt-tab-05" role="tab"><span
+                                    th:text="${followings.size()} + ' Followings'"></span></a>
+                        </li>
+                        <!--                        <li class="nav-item tt-hide-md">-->
+                        <!--                            <a data-toggle="tab" href="#tt-tab-06" role="tab"><span>Categories</span></a>-->
+                        <!--                        </li>-->
+                    </ul>
+                </div>
+                <div class="tab-content">
+                    <div class="tab-pane tt-indent-none  show active" id="tt-tab-01" role="tabpanel">
+                        <div class="my-3">
+                            <div th:replace="~{fragments/post-list :: post-list}" th:with="posts=${posts}"></div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane tt-indent-none" id="tt-tab-04" role="tabpanel">
+                        <div th:insert="~{fragments/user-list :: user-list}" th:with="users=${followers}"
+                             th:remove="tag"></div>
+                    </div>
+                    <div class="tab-pane tt-indent-none" id="tt-tab-05" role="tabpanel">
+                        <div th:insert="~{fragments/user-list :: user-list}" th:with="users=${followings}"
+                             th:remove="tag"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

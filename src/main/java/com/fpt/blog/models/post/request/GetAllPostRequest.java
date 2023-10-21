@@ -1,7 +1,6 @@
 package com.fpt.blog.models.post.request;
 
-import com.fpt.blog.entities.Category;
-import com.fpt.blog.entities.Post;
+import com.fpt.blog.entities.*;
 import com.fpt.blog.enums.PostStatus;
 import com.fpt.blog.models.common.request.BaseFilterRequest;
 import jakarta.persistence.criteria.Predicate;
@@ -28,12 +27,16 @@ public class GetAllPostRequest implements BaseFilterRequest<Post> {
 
     private Long categoryId;
 
+    private Long userId;
+
+    private String tag;
+
     @Override
     public Specification<Post> getSpecification() {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (status == null) {
+            if (status != null) {
                 predicates.add(cb.equal(root.get(Post.Fields.status), status));
             }
 
@@ -42,8 +45,16 @@ public class GetAllPostRequest implements BaseFilterRequest<Post> {
             }
 
             if (search != null && !search.isBlank()) {
-                search = "%" + search.trim().toLowerCase() + "%";
-                predicates.add(cb.like(cb.lower(root.get(Post.Fields.title)), search));
+                String searchTrim = "%" + search.trim().toLowerCase() + "%";
+                predicates.add(cb.like(cb.lower(root.get(Post.Fields.title)), searchTrim));
+            }
+
+            if (userId != null) {
+                predicates.add(cb.equal(root.join(Post.Fields.user).get(User.Fields.id), userId));
+            }
+
+            if (tag != null && !tag.isBlank()) {
+                predicates.add(cb.equal(cb.lower(root.join(Post.Fields.tags).get(Tag.Fields.name)), tag.trim().toLowerCase()));
             }
 
             return cb.and(predicates.toArray(new Predicate[0]));
