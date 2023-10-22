@@ -16,5 +16,6 @@ public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificat
     @Query("SELECT post FROM Post post WHERE post.status = ?1 ORDER BY post.viewCount DESC")
     List<Post> findFeaturedPost(PostStatus status, Pageable pageable);
 
+    long countByUserId(long userId);
 
 }

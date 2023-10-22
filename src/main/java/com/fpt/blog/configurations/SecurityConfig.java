@@ -60,7 +60,7 @@ public class SecurityConfig {
                 .and()
                 .csrf().disable()
                 .oauth2Login()
-                .loginPage("/login")
+                .loginPage("/auth/login")
                 .userInfoEndpoint()
                 .userService(oAuth2UserService)
                 .and()

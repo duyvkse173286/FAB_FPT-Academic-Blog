@@ -71,6 +71,11 @@ public class UserServiceImpl implements UserService {
             throw new UsernameNotFoundException("Invalid credentials!");
         }
 
+        if (!UserStatus.ACTIVE.equals(user.getStatus())) {
+            throw new UsernameNotFoundException("User is not active");
+        }
+
+
         return new SecurityUser(user);
     }
 

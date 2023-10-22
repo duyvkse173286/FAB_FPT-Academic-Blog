@@ -17,7 +17,7 @@
                 </a>
                 <div>
                     <div th:if="${param.error}" class="alert alert-danger">
-                        Invalid username and password.
+                        Invalid username and password. Or Inactive user
                     </div>
                 </div>
                 <form class="form-default" method="post" th:action="@{/auth/login}">

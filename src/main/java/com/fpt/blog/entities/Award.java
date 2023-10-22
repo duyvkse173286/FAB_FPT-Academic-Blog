@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import lombok.experimental.FieldNameConstants;
 
 @Entity
 @Getter
@@ -14,7 +15,8 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Table(name = "award")
 @Accessors(chain = true)
-public class Award {
+@FieldNameConstants
+public class Award extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

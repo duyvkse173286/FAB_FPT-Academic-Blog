@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -19,5 +21,9 @@ public class AwardResponse {
     private String description;
 
     private String image;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 
 }

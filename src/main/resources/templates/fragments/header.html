@@ -25,8 +25,8 @@
     </nav>
     <header id="tt-header" xmlns:sec="http://www.w3.org/1999/xhtml">
         <div class="container">
-            <div class="row tt-row no-gutters">
-                <div class="col-auto">
+            <div class="row tt-row no-gutters flex-nowrap">
+                <div class="col-auto me-2 me-md-5">
                     <!-- toggle mobile menu -->
                     <a class="toggle-mobile-menu" href="#">
                         <svg class="tt-icon">
@@ -44,40 +44,47 @@
                         <nav>
                             <ul>
                                 <th:block sec:authorize="isAnonymous()">
-                                    <li>
+                                    <li  th:classappend="${path == '/categories' ? 'active' : ''}">
                                         <a th:href="@{/categories}"><span>Categories</span></a></li>
                                 </th:block>
                                 <th:block sec:authorize="isAuthenticated()">
                                     <th:block th:if="${session.loggedUser.role.toString() == 'ADMIN'}">
 
-                                        <li>
+                                        <li th:classappend="${path == '/admin/users' ? 'active' : ''}">
                                             <a th:href="@{/admin/users}"><span>Users</span></a>
                                         </li>
-                                        <li>
+                                        <li th:classappend="${path == '/admin/categories' ? 'active' : ''}">
                                             <a th:href="@{/admin/categories}"><span>Categories</span></a>
                                         </li>
-                                        <li>
-                                            <a th:href="@{/admin/tags}"><span>Tags</span></a></li>
+                                        <li th:classappend="${path == '/admin/tags' ? 'active' : ''}">
+                                            <a th:href="@{/admin/tags}"><span>Tags</span></a>
+                                        </li>
 
-                                        <li>
+                                        <li th:classappend="${path == '/admin/awards' ? 'active' : ''}">
+                                            <a th:href="@{/admin/awards}">
+                                                <span>Awards</span>
+                                            </a>
+                                        </li>
+
+                                        <li  th:classappend="${path == '/posts/my-posts' ? 'active' : ''}">
                                             <a th:href="@{/posts/my-posts}"><span>My post</span></a>
                                         </li>
 
                                     </th:block>
 
                                     <th:block th:if="${session.loggedUser.role.toString() == 'MENTOR'}">
-                                        <li>
+                                        <li  th:classappend="${path == '/categories' ? 'active' : ''}">
                                             <a th:href="@{/categories}"><span>Categories</span></a></li>
-                                        <li>
+                                        <li  th:classappend="${path == '/posts/my-posts' ? 'active' : ''}">
                                             <a th:href="@{/posts/my-posts}"><span>My post</span></a></li>
-                                        <li>
+                                        <li  th:classappend="${path == '/mentor/post-requests' ? 'active' : ''}">
                                             <a th:href="@{/mentor/post-requests}"><span>Post request</span></a></li>
                                     </th:block>
 
                                     <th:block th:if="${session.loggedUser.role.toString() == 'STUDENT'}">
-                                        <li>
+                                        <li  th:classappend="${path == '/categories' ? 'active' : ''}">
                                             <a th:href="@{/categories}"><span>Categories</span></a></li>
-                                        <li>
+                                        <li  th:classappend="${path == '/posts/my-posts' ? 'active' : ''}">
                                             <a th:href="@{/posts/my-posts}"><span>My post</span></a></li>
                                     </th:block>
                                 </th:block>
@@ -91,7 +98,8 @@
                         <!-- /toggle -->
                         <form th:action="@{/posts}" class="search-wrapper">
                             <div class="search-form">
-                                <input name="search" th:value="${search}" type="text" class="tt-search__input" placeholder="Search">
+                                <input name="search" th:value="${search}" type="text" class="tt-search__input"
+                                       placeholder="Search">
                                 <button class="tt-search__btn" type="submit">
                                     <ion-icon name="search-outline"></ion-icon>
                                 </button>

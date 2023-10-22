@@ -17,5 +17,4 @@ public enum MemberType {
         return this.postCount;
     }
 
-
 }

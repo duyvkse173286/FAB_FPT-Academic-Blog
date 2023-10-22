@@ -1,6 +1,7 @@
 package com.fpt.blog.services.impl;
 
 import com.fpt.blog.entities.*;
+import com.fpt.blog.enums.MemberType;
 import com.fpt.blog.enums.PostStatus;
 import com.fpt.blog.enums.ReactType;
 import com.fpt.blog.enums.Role;
@@ -101,6 +102,10 @@ public class PostServiceImpl implements PostService {
 
         Post savedPost = postRepository.save(post);
 
+        if (PostStatus.APPROVED.equals(savedPost.getStatus())) {
+            updateMemberType(post.getUser());
+        }
+
         return savedPost;
     }
 
@@ -137,6 +142,8 @@ public class PostServiceImpl implements PostService {
         post.setStatus(PostStatus.APPROVED);
 
         Post savedPost = postRepository.save(post);
+
+        updateMemberType(post.getUser());
 
         return postMapper.toResponse(savedPost);
     }
@@ -339,5 +346,27 @@ public class PostServiceImpl implements PostService {
                 .stream()
                 .map(postMapper::toResponse)
                 .toList();
+    }
+
+    private void updateMemberType(User user) {
+        long postCount = postRepository.countByUserId(user.getId());
+
+        if (postCount >= MemberType.COPPER.getPostCount()) {
+            user.setMemberType(MemberType.COPPER);
+        }
+
+        if (postCount >= MemberType.SILVER.getPostCount()) {
+            user.setMemberType(MemberType.SILVER);
+        }
+
+        if (postCount >= MemberType.GOLD.getPostCount()) {
+            user.setMemberType(MemberType.SILVER);
+        }
+
+        if (postCount >= MemberType.DIAMOND.getPostCount()) {
+            user.setMemberType(MemberType.DIAMOND);
+        }
+
+        userRepository.save(user);
     }
 }

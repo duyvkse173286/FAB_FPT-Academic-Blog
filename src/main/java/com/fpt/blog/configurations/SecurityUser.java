@@ -1,6 +1,7 @@
 package com.fpt.blog.configurations;
 
 import com.fpt.blog.entities.User;
+import com.fpt.blog.enums.UserStatus;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -71,7 +72,7 @@ public class SecurityUser implements UserDetails, OAuth2User {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return UserStatus.ACTIVE.equals(user.getStatus());
     }
 
     @Override
