@@ -66,6 +66,9 @@
                                                             <span>Choose awards</span>
                                                         </label>
                                                         <select id="inputState" class="form-select" multiple name="awardIds">
+                                                            <option value="">
+                                                               ---
+                                                            </option>
                                                             <option th:value="${award.id}" th:each="award: ${awards}">
                                                                 [[${award.name}]]
                                                             </option>
