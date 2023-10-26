@@ -1,6 +1,7 @@
 package com.fpt.blog.services.impl;
 
 import com.fpt.blog.configurations.SecurityUser;
+import com.fpt.blog.constants.BaseConstants;
 import com.fpt.blog.entities.Following;
 import com.fpt.blog.entities.User;
 import com.fpt.blog.enums.Role;
@@ -15,13 +16,18 @@ import com.fpt.blog.repositories.FollowingRepository;
 import com.fpt.blog.repositories.UserRepository;
 import com.fpt.blog.services.FileService;
 import com.fpt.blog.services.UserService;
+import com.fpt.blog.utils.ApplicationUtils;
 import com.fpt.blog.utils.UploadMedia;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -59,22 +65,25 @@ public class UserServiceImpl implements UserService {
      * @throws UsernameNotFoundException
      */
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> userByUsername = userRepository.findByEmail(username);
-        if (userByUsername.isEmpty()) {
-            log.error("Could not find user with that email: {}", username);
-            throw new UsernameNotFoundException("Invalid credentials!");
+    @SneakyThrows
+    public UserDetails loadUserByUsername(String username) {
+        // validate fpt email
+        // check email
+        if (!ApplicationUtils.isAllowedEmail(username)) {
+            throw new AuthenticationServiceException(String.format( "Email is not allowed to access this system. Only emails with domain %s allowed", String.join(", ", BaseConstants.ALLOWED_DOMAINS)));
         }
-        User user = userByUsername.get();
-        if (!user.getEmail().equals(username)) {
+
+        Optional<User> userByUsername = userRepository.findByEmail(username);
+        User user = userByUsername.orElse(null);
+
+        if (user == null || !user.getEmail().equals(username)) {
             log.error("Could not find user with that email: {}", username);
-            throw new UsernameNotFoundException("Invalid credentials!");
+            throw new AuthenticationServiceException("Email is not existed!");
         }
 
         if (!UserStatus.ACTIVE.equals(user.getStatus())) {
-            throw new UsernameNotFoundException("User is not active");
+            throw new AuthenticationServiceException("User is not active");
         }
-
 
         return new SecurityUser(user);
     }
@@ -249,10 +258,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserResponse> getAllUsers(GetAllUsersRequest request) {
-        return userRepository.findAll(request.getSpecification())
+        return userRepository.findAll(request.getSpecification(), request.getOrder())
                 .stream()
                 .map(userMapper::toResponse)
                 .toList();
+    }
+
+    @Override
+    public Page<UserResponse> getAllUsersFitlerPaging(GetAllUsersRequest request) {
+        return userRepository
+                .findAll(request.getSpecification(), request.getPageable())
+                .map(userMapper::toResponse);
     }
 
     @Override

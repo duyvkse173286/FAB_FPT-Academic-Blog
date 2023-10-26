@@ -8,6 +8,7 @@ import com.fpt.blog.repositories.TagRepository;
 import com.fpt.blog.services.TagService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,9 +32,16 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public List<TagResponse> getAllTags(GetAllTagRequest request) {
-        return tagRepository.findAll(request.getSpecification())
+        return tagRepository.findAll(request.getSpecification(), request.getOrder())
                 .stream().map(tagMapper::toResponse)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<TagResponse> getAllTagsFilterPaging(GetAllTagRequest request) {
+        return tagRepository
+                .findAll(request.getSpecification(), request.getPageable())
+                .map(tagMapper::toResponse);
     }
 
     @Override

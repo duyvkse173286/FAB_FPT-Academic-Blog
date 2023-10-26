@@ -7,17 +7,19 @@ import com.fpt.blog.models.user.request.GetAllUsersRequest;
 import com.fpt.blog.models.user.request.UpdateUserRequest;
 import com.fpt.blog.models.user.response.UserResponse;
 import com.fpt.blog.services.UserService;
+import com.fpt.blog.utils.ApplicationUtils;
 import com.fpt.blog.utils.RegexUtils;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
+import java.util.Objects;
 
 @Controller
 @RequiredArgsConstructor
@@ -29,14 +31,24 @@ public class AdminUserController {
 
     @GetMapping
     public String getAllUser(@ModelAttribute GetAllUsersRequest request, Model model) {
-        List<UserResponse> users = userService.getAllUsers(request);
+        Page<UserResponse> users = userService.getAllUsersFitlerPaging(request);
 
-        model.addAttribute("users", users);
+        model.addAttribute("users", users.getContent());
 
         // filter request
         model.addAttribute("search", request.getSearch());
         model.addAttribute("role", request.getRole());
         model.addAttribute("status", request.getStatus());
+        model.addAttribute("pageNumber", users.getNumber() + 1);
+        model.addAttribute("totalPages", users.getTotalPages());
+
+        model.addAttribute(
+                "queryString",
+                String.format(
+                        "/admin/users?search=%s&role=%s&status=%s",
+                        Objects.requireNonNullElse(request.getSearch(), ""),
+                        Objects.requireNonNullElse(request.getRole(), ""),
+                        Objects.requireNonNullElse(request.getStatus(), "")));
 
         return "admin/users";
     }
@@ -47,6 +59,11 @@ public class AdminUserController {
             redirectAttrs.addFlashAttribute("createRequest", request);
 
             // check email
+            if (!ApplicationUtils.isAllowedEmail(request.getEmail().trim())) {
+                session.setAttribute("error", String.format("Email is not allowed to access this system. Only emails with domain %s allowed", String.join(", ", BaseConstants.ALLOWED_DOMAINS)));
+                return "redirect:/admin/users";
+            }
+
             if (userService.checkExistUser(request.getEmail().trim())) {
                 session.setAttribute("error", "Existed email");
                 return "redirect:/admin/users";

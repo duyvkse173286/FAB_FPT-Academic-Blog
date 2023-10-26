@@ -7,6 +7,7 @@ import com.fpt.blog.models.common.request.BaseFilterRequest;
 import com.fpt.blog.models.post.request.*;
 import com.fpt.blog.models.post.response.PostResponse;
 import com.fpt.blog.models.reaction.response.ReactionResponse;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ public interface PostService {
 
     Post createPost(CreatePostRequest request);
 
-    List<PostResponse> getAllPosts(BaseFilterRequest<Post> request);
+    Page<PostResponse> getAllPosts(BaseFilterRequest<Post> request);
 
     PostResponse approvePost(long id, ApprovePostRequest request);
 

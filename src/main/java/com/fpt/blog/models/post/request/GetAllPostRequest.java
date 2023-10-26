@@ -19,7 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 @Accessors(chain = true)
 @NoArgsConstructor
-public class GetAllPostRequest implements BaseFilterRequest<Post> {
+public class GetAllPostRequest extends BaseFilterRequest<Post> {
 
     private PostStatus status;
 

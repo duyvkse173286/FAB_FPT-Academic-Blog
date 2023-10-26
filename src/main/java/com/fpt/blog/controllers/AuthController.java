@@ -7,8 +7,12 @@ import com.fpt.blog.models.auth.request.LoginRequest;
 import com.fpt.blog.models.user.request.CreateUserRequest;
 import com.fpt.blog.models.user.response.UserResponse;
 import com.fpt.blog.services.UserService;
+import com.fpt.blog.utils.ApplicationUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +32,23 @@ public class AuthController {
         return "login";
     }
 
+    @GetMapping("login-error")
+    public String loginError(Model model, HttpSession session) {
+
+        String errorMessage = null;
+        if (session != null) {
+            AuthenticationException ex = (AuthenticationException) session
+                    .getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+            if (ex != null) {
+                errorMessage = ex.getMessage();
+            }
+        }
+
+        session.setAttribute("error", errorMessage);
+
+        return "login";
+    }
+
     @GetMapping("signup")
     public String signup(Model model) {
         return "signup";
@@ -43,6 +64,11 @@ public class AuthController {
 
         try {
             // check email
+            if (!ApplicationUtils.isAllowedEmail(request.getEmail().trim())) {
+                session.setAttribute("error", String.format( "Email is not allowed to access this system. Only emails with domain %s allowed", String.join(", ", BaseConstants.ALLOWED_DOMAINS)));
+                return "signup";
+            }
+
             if (userService.checkExistUser(request.getEmail().trim())) {
                 session.setAttribute("error", "Existed email");
                 return "signup";

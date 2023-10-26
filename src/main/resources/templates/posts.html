@@ -17,7 +17,7 @@
                                 Search result for: <span th:text="${search}"></span>
                             </th:block>
 
-                            <th:block th:if="${tag != null}">
+                            <th:block th:if="${tag != null && tag != ''}">
                                 Tag: <span class="badge btn-primary" th:text="${tag}"></span>
                             </th:block>
 
@@ -27,6 +27,11 @@
 
                         </h5>
                         <div th:replace="~{fragments/post-list :: post-list}">Post list</div>
+
+                        <div th:replace="~{fragments/pagination :: pagination}">
+                            Pagination
+                        </div>
+
                     </div>
                 </div>
                 <div class="col-lg-4 mb-5">

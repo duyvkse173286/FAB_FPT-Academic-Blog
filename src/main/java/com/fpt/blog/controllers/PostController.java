@@ -20,11 +20,14 @@ import com.fpt.blog.services.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 @RequiredArgsConstructor
@@ -46,11 +49,18 @@ public class PostController {
 
         request.setStatus(PostStatus.APPROVED);
 
-        model.addAttribute("posts", postService.getAllPosts(request));
+        request.setSortBy("createdAt");
+        request.setSortDir(Sort.Direction.DESC);
+
+        Page<PostResponse> postPage = postService.getAllPosts(request);
+
+        model.addAttribute("posts", postPage.getContent());
         model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("tags", tagService.getAllTags());
         model.addAttribute("search", request.getSearch());
         model.addAttribute("tag", request.getTag());
+        model.addAttribute("pageNumber", postPage.getNumber() + 1);
+        model.addAttribute("totalPages", postPage.getTotalPages());
 
         if (request.getCategoryId() != null) {
             CategoryResponse category = categoryService.getCategory(request.getCategoryId());
@@ -58,6 +68,14 @@ public class PostController {
                 model.addAttribute("category", category.getName());
             }
         }
+
+        model.addAttribute(
+                "queryString",
+                String.format("/posts?search=%s&tag=%s&categoryId=%s",
+                        Objects.requireNonNullElse(request.getSearch(), ""),
+                        Objects.requireNonNullElse(request.getTag(), ""),
+                        Objects.requireNonNullElse(request.getCategoryId(), "")));
+
 
         return "posts";
 
@@ -195,18 +213,27 @@ public class PostController {
 
 
     @GetMapping("my-posts")
-    public String getAllMyPost(Model model) {
+    public String getAllMyPost(Model model, @ModelAttribute GetAllPostRequest request) {
         UserResponse user = userService.getLoginUser();
         if (user == null) {
             return "redirect:/auth/login";
         }
 
-        List<PostResponse> posts = postService.getAllPosts(new GetAllPostRequest()
-                .setUserId(user.getId()));
+        request.setUserId(user.getId());
+        Page<PostResponse> postPage = postService.getAllPosts(request);
 
-        model.addAttribute("posts", posts);
+        model.addAttribute("posts", postPage.getContent());
         model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("tags", tagService.getAllTags());
+        model.addAttribute("pageNumber", postPage.getNumber() + 1);
+        model.addAttribute("totalPages", postPage.getTotalPages());
+
+        model.addAttribute(
+                "queryString",
+                String.format("/posts?search=%s&tag=%s&categoryId=%s",
+                        Objects.requireNonNullElse(request.getSearch(), ""),
+                        Objects.requireNonNullElse(request.getTag(), ""),
+                        Objects.requireNonNullElse(request.getCategoryId(), "")));
 
         return "my-posts";
     }

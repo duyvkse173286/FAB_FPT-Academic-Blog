@@ -13,6 +13,7 @@ import com.fpt.blog.utils.RegexUtils;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.sql.Update;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,7 @@ public class UserController {
     private final PostService postService;
 
     @GetMapping("{userId}")
-    public String getUserDetails(@PathVariable long userId, Model model) {
+    public String getUserDetails(@PathVariable long userId, Model model, @ModelAttribute GetAllPostRequest request) {
         UserResponse user = userService.getUser(userId);
         if (user == null) {
             return "not-found";
@@ -38,16 +39,19 @@ public class UserController {
         model.addAttribute("user", user);
 
         // posts
-        List<PostResponse> posts = postService.getAllPosts(new GetAllPostRequest()
-                .setUserId(userId)
-                .setStatus(PostStatus.APPROVED));
+        request.setUserId(userId);
+        request.setStatus(PostStatus.APPROVED);
+        Page<PostResponse> postPage = postService.getAllPosts(request);
 
         List<UserResponse> followers = userService.getFollowers(userId);
         List<UserResponse> followings = userService.getFollowings(userId);
 
-        model.addAttribute("posts", posts);
+        model.addAttribute("posts", postPage.getContent());
         model.addAttribute("followers", followers);
         model.addAttribute("followings", followings);
+        model.addAttribute("pageNumber", postPage.getNumber() + 1);
+        model.addAttribute("totalPages", postPage.getTotalPages());
+        model.addAttribute("queryString", String.format("/users/%s?", userId));
 
         UserResponse loggedUser = userService.getLoginUser();
         if (loggedUser != null) {
@@ -93,7 +97,7 @@ public class UserController {
     }
 
     @GetMapping("profile")
-    public String getProfile(Model model) {
+    public String getProfile(Model model, @ModelAttribute GetAllPostRequest request) {
         UserResponse user = userService.getLoginUser();
         if (user == null) {
             return "redirect:/auth/login";
@@ -102,13 +106,17 @@ public class UserController {
         model.addAttribute("user", user);
 
         // posts
-        List<PostResponse> posts = postService.getAllPosts(new GetAllPostRequest().setUserId(user.getId()));
+        request.setUserId(user.getId());
+        Page<PostResponse> postPage = postService.getAllPosts(request);
         List<UserResponse> followers = userService.getFollowers(user.getId());
         List<UserResponse> followings = userService.getFollowings(user.getId());
 
-        model.addAttribute("posts", posts);
+        model.addAttribute("posts", postPage.getContent());
         model.addAttribute("followers", followers);
         model.addAttribute("followings", followings);
+        model.addAttribute("pageNumber", postPage.getNumber() + 1);
+        model.addAttribute("totalPages", postPage.getTotalPages());
+        model.addAttribute("queryString", "/users/profile?");
 
         UserResponse loggedUser = userService.getLoginUser();
 

@@ -1,5 +1,6 @@
 package com.fpt.blog.controllers;
 
+import com.fpt.blog.entities.Post;
 import com.fpt.blog.enums.PostStatus;
 import com.fpt.blog.models.category.request.GetAllCategoryRequest;
 import com.fpt.blog.models.category.response.CategoryResponse;
@@ -14,6 +15,8 @@ import com.fpt.blog.services.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,17 +45,23 @@ public class HomeController {
             session.setAttribute("loggedUser", loggedUser);
         }
 
-        List<PostResponse> posts = postService.getAllPosts(new GetAllPostRequest()
-                .setStatus(PostStatus.APPROVED));
+        GetAllPostRequest request = new GetAllPostRequest();
+        request.setStatus(PostStatus.APPROVED);
+
+        Page<PostResponse> postPage = postService.getAllPosts(request);
 
         List<PostResponse> featuredPosts = postService.getFeaturedPosts(5);
-        List<CategoryResponse> categories = categoryService.getAllCategories(null);
+        List<CategoryResponse> categories = categoryService.getAllCategories(new GetAllCategoryRequest());
         List<TagResponse> tags = tagService.getAllTags();
 
-        model.addAttribute("posts", posts);
+        model.addAttribute("posts", postPage.getContent());
         model.addAttribute("categories", categories);
         model.addAttribute("tags", tags);
         model.addAttribute("featuredPosts", featuredPosts);
+        model.addAttribute("pageNumber", postPage.getNumber() + 1);
+        model.addAttribute("totalPages", postPage.getTotalPages());
+
+        model.addAttribute("queryString", "/posts?");
 
         return "index";
     }

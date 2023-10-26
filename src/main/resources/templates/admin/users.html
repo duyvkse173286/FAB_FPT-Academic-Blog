@@ -85,7 +85,7 @@
 
             </h1>
 
-            <div class="mb-5">
+            <div class="mb-4">
                 <form class="filter-form">
                     <div class="form-group">
                         <label for="search"> Search </label>
@@ -333,6 +333,9 @@
                         </tr>
                         </tbody>
                     </table>
+                </div>
+                <div th:replace="~{fragments/pagination :: pagination}">
+                    Pagination
                 </div>
                 <th:block th:if="${#lists.isEmpty(users)}">
                     <div th:replace="~{fragments/no-data :: no-data}">No data</div>

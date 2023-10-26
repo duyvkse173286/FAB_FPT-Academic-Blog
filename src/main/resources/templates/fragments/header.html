@@ -44,8 +44,17 @@
                         <nav>
                             <ul>
                                 <th:block sec:authorize="isAnonymous()">
-                                    <li  th:classappend="${path == '/categories' ? 'active' : ''}">
-                                        <a th:href="@{/categories}"><span>Categories</span></a></li>
+                                    <li th:classappend="${path == '/categories' ? 'active' : ''}">
+                                        <a th:href="@{/categories}"><span>Categories</span></a>
+                                        <ul class="nav-dropdown">
+                                            <li th:each="cate : ${nav_categories}" class="nav-dropdown-item">
+                                                <a th:href="@{'/posts?categoryId=' + ${cate?.id}}">
+                                                    <img th:src="${cate.image != null ? cate.image :  '/images/placeholder.png'}">
+                                                    <span th:text="${cate?.name}"></span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
                                 </th:block>
                                 <th:block sec:authorize="isAuthenticated()">
                                     <th:block th:if="${session.loggedUser.role.toString() == 'ADMIN'}">
@@ -54,7 +63,8 @@
                                             <a th:href="@{/admin/users}"><span>Users</span></a>
                                         </li>
                                         <li th:classappend="${path == '/admin/categories' ? 'active' : ''}">
-                                            <a th:href="@{/admin/categories}"><span>Categories</span></a>
+                                            <a th:href="@{/admin/categories}"><span>Categories</span>
+                                            </a>
                                         </li>
                                         <li th:classappend="${path == '/admin/tags' ? 'active' : ''}">
                                             <a th:href="@{/admin/tags}"><span>Tags</span></a>
@@ -66,25 +76,43 @@
                                             </a>
                                         </li>
 
-                                        <li  th:classappend="${path == '/posts/my-posts' ? 'active' : ''}">
+                                        <li th:classappend="${path == '/posts/my-posts' ? 'active' : ''}">
                                             <a th:href="@{/posts/my-posts}"><span>My post</span></a>
                                         </li>
 
                                     </th:block>
 
                                     <th:block th:if="${session.loggedUser.role.toString() == 'MENTOR'}">
-                                        <li  th:classappend="${path == '/categories' ? 'active' : ''}">
-                                            <a th:href="@{/categories}"><span>Categories</span></a></li>
-                                        <li  th:classappend="${path == '/posts/my-posts' ? 'active' : ''}">
+                                        <li th:classappend="${path == '/categories' ? 'active' : ''}">
+                                            <a th:href="@{/categories}"><span>Categories</span></a>
+                                            <ul class="nav-dropdown">
+                                                <li th:each="cate : ${nav_categories}" class="nav-dropdown-item">
+                                                    <a th:href="@{'/posts?categoryId=' + ${cate?.id}}">
+                                                        <img th:src="${cate.image != null ? cate.image :  '/images/placeholder.png'}">
+                                                        <span th:text="${cate?.name}"></span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li th:classappend="${path == '/posts/my-posts' ? 'active' : ''}">
                                             <a th:href="@{/posts/my-posts}"><span>My post</span></a></li>
-                                        <li  th:classappend="${path == '/mentor/post-requests' ? 'active' : ''}">
+                                        <li th:classappend="${path == '/mentor/post-requests' ? 'active' : ''}">
                                             <a th:href="@{/mentor/post-requests}"><span>Post request</span></a></li>
                                     </th:block>
 
                                     <th:block th:if="${session.loggedUser.role.toString() == 'STUDENT'}">
-                                        <li  th:classappend="${path == '/categories' ? 'active' : ''}">
-                                            <a th:href="@{/categories}"><span>Categories</span></a></li>
-                                        <li  th:classappend="${path == '/posts/my-posts' ? 'active' : ''}">
+                                        <li th:classappend="${path == '/categories' ? 'active' : ''}">
+                                            <a th:href="@{/categories}"><span>Categories</span></a>
+                                            <ul class="nav-dropdown">
+                                                <li th:each="cate : ${nav_categories}" class="nav-dropdown-item">
+                                                    <a th:href="@{'/posts?categoryId=' + ${cate?.id}}">
+                                                        <img th:src="${cate.image != null ? cate.image :  '/images/placeholder.png'}">
+                                                        <span th:text="${cate?.name}"></span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li th:classappend="${path == '/posts/my-posts' ? 'active' : ''}">
                                             <a th:href="@{/posts/my-posts}"><span>My post</span></a></li>
                                     </th:block>
                                 </th:block>

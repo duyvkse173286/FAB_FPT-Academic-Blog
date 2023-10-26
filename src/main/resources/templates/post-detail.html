@@ -5,8 +5,8 @@
 <main id="page" layout:fragment="content">
     <div class="container">
         <div class="">
-            <div class="tt-single-topic-list" sec:authorize="isAuthenticated()">
-                <div class="tt-item mb-3 p-4" th:if="${#authentication.principal?.user?.id == post.user?.id}">
+            <div class="tt-single-topic-list" sec:authorize="isAuthenticated()" th:if="${#authentication.principal?.user?.id == post.user?.id || #authentication.principal?.user?.role.toString() == 'ADMIN' || #authentication.principal?.user?.role.toString() == 'MENTOR'}">
+                <div class="tt-item mb-3 p-4">
                     <div class="tt-item-info">
                         <div class="post-detail-actions mb-2 d-flex align-items-center justify-content-between">
                             <p>
@@ -25,7 +25,7 @@
                                 </th:block>
                             </p>
                             <div>
-                                <a th:href="@{'/posts/' + ${post.id} + '/update'}" class="btn btn-secondary">
+                                <a th:href="@{'/posts/' + ${post.id} + '/update'}" class="btn btn-secondary" th:if="${#authentication.principal?.user?.id == post.user?.id}">
                                     <ion-icon class="me-1" name="create-outline"></ion-icon>
                                     Update
                                 </a>

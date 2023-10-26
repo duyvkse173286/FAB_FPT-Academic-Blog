@@ -21,7 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
-public class GetAllAwardRequest implements BaseFilterRequest<Award> {
+public class GetAllAwardRequest extends BaseFilterRequest<Award> {
 
     private String search;
 

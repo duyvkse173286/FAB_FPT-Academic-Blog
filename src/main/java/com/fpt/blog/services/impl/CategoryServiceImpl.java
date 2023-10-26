@@ -12,6 +12,7 @@ import com.fpt.blog.services.FileService;
 import com.fpt.blog.utils.UploadMedia;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,10 +31,15 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<CategoryResponse> getAllCategories(GetAllCategoryRequest request) {
         return categoryRepository
-                .findAll(request != null
-                        ? request.getSpecification()
-                        : null).stream()
+                .findAll(request.getSpecification(), request.getOrder()).stream()
                 .map(categoryMapper::toResponse).toList();
+    }
+
+    @Override
+    public Page<CategoryResponse> getAllCategoriesFilterPaging(GetAllCategoryRequest request) {
+        return categoryRepository
+                .findAll(request.getSpecification(), request.getPageable())
+                .map(categoryMapper::toResponse);
     }
 
     @Override

@@ -12,6 +12,7 @@ import com.fpt.blog.services.FileService;
 import com.fpt.blog.utils.UploadMedia;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,9 +31,15 @@ public class AwardServiceImpl implements AwardService {
 
     @Override
     public List<AwardResponse> getAlAwards(BaseFilterRequest<Award> request) {
-        return awardRepository.findAll(request != null ? request.getSpecification() : null)
+        return awardRepository.findAll(request.getSpecification(), request.getOrder())
                 .stream().map(awardMapper::toResponse)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<AwardResponse> getAlAwardsFilterPaging(BaseFilterRequest<Award> request) {
+        return awardRepository.findAll(request.getSpecification(), request.getPageable())
+                .map(awardMapper::toResponse);
     }
 
     @Override

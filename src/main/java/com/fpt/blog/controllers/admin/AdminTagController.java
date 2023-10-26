@@ -1,24 +1,20 @@
 package com.fpt.blog.controllers.admin;
 
-import com.fpt.blog.models.category.request.CreateCategoryRequest;
-import com.fpt.blog.models.category.request.GetAllCategoryRequest;
-import com.fpt.blog.models.category.request.UpdateCategoryRequest;
-import com.fpt.blog.models.category.response.CategoryResponse;
 import com.fpt.blog.models.tag.CreateTagRequest;
 import com.fpt.blog.models.tag.GetAllTagRequest;
 import com.fpt.blog.models.tag.TagResponse;
 import com.fpt.blog.models.tag.UpdateTagRequest;
-import com.fpt.blog.services.CategoryService;
 import com.fpt.blog.services.TagService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
+import java.util.Objects;
 
 @Controller
 @RequiredArgsConstructor
@@ -31,10 +27,16 @@ public class AdminTagController {
 
     @GetMapping
     public String getAllTags(@ModelAttribute GetAllTagRequest request, Model model) {
-        List<TagResponse> tags = tagService.getAllTags(request);
+        Page<TagResponse> tags = tagService.getAllTagsFilterPaging(request);
 
-        model.addAttribute("tags", tags);
-        model.addAttribute("filter", request);
+        model.addAttribute("tags", tags.getContent());
+        model.addAttribute("search", request.getSearch());
+        model.addAttribute("pageNumber", tags.getNumber() + 1);
+        model.addAttribute("totalPages", tags.getTotalPages());
+
+        model.addAttribute(
+                "queryString",
+                String.format("/admin/tags?search=%s", Objects.requireNonNullElse(request.getSearch(), "")));
 
         return "admin/tags";
     }

@@ -1,0 +1,23 @@
+<div th:fragment="pagination" th:remove="tag">
+    <nav class="py-4" th:if="${totalPages > 0}">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${pageNumber <= 1 ? 'disabled' : ''}">
+                <a class="page-link" th:href="@{${queryString} + '&pageNumber=1'}" >First</a>
+            </li>
+            <li class="page-item" th:classappend="${pageNumber <= 1 ? 'disabled' : ''}">
+                <a class="page-link" th:href="@{${queryString} + '&pageNumber=' + ${pageNumber - 1}}" >Previous</a>
+            </li>
+
+            <li class="page-item" th:each="i: ${#numbers.sequence(1, totalPages)}" th:classappend="${pageNumber ==  i ? 'active' : ''}">
+                <a class="page-link" th:href="@{${queryString} + '&pageNumber=' + ${i}}" th:text="${i}"></a>
+            </li>
+
+            <li class="page-item" th:classappend="${pageNumber >= totalPages ? 'disabled' : ''}">
+                <a class="page-link"th:href="@{${queryString} + '&pageNumber=' + ${pageNumber + 1}}" >Next</a>
+            </li>
+            <li class="page-item" th:classappend="${pageNumber >= totalPages ? 'disabled' : ''}">
+                <a class="page-link" th:href="@{${queryString} + '&pageNumber=' + ${totalPages}}">Last</a>
+            </li>
+        </ul>
+    </nav>
+</div>

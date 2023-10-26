@@ -5,12 +5,15 @@ import com.fpt.blog.models.category.request.CreateCategoryRequest;
 import com.fpt.blog.models.category.request.GetAllCategoryRequest;
 import com.fpt.blog.models.category.request.UpdateCategoryRequest;
 import com.fpt.blog.models.category.response.CategoryResponse;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface CategoryService {
 
     List<CategoryResponse> getAllCategories(GetAllCategoryRequest request);
+
+    Page<CategoryResponse> getAllCategoriesFilterPaging(GetAllCategoryRequest request);
 
     List<CategoryResponse> getAllCategories();
 

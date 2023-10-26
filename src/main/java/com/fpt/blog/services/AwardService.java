@@ -5,6 +5,7 @@ import com.fpt.blog.models.adward.request.CreateAwardRequest;
 import com.fpt.blog.models.adward.request.UpdateAwardRequest;
 import com.fpt.blog.models.adward.response.AwardResponse;
 import com.fpt.blog.models.common.request.BaseFilterRequest;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ public interface AwardService {
 
     List<AwardResponse> getAlAwards(BaseFilterRequest<Award> request);
 
+    Page<AwardResponse> getAlAwardsFilterPaging(BaseFilterRequest<Award> request);
     AwardResponse createAward(CreateAwardRequest request);
 
     AwardResponse updateAward(long id, UpdateAwardRequest request);

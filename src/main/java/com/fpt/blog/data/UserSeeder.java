@@ -27,14 +27,14 @@ public class UserSeeder implements CommandLineRunner {
 
         if (userRepository.count() == 0) {
             User admin = new User();
-            admin.setEmail("admin@gmail.com");
+            admin.setEmail("admin@fpt.edu.vn");
             admin.setPassword(passwordEncoder.encode("Admin123@"));
             admin.setRole(Role.ADMIN);
             admin.setName("Administrator");
             admin.setDescription("System administrator");
 
             User mentor = new User();
-            mentor.setEmail("mentor@gmail.com");
+            mentor.setEmail("mentor@fpt.edu.vn");
             mentor.setPassword(passwordEncoder.encode("Mentor123@"));
             mentor.setRole(Role.MENTOR);
             mentor.setName("Mentor");

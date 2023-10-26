@@ -61,11 +61,11 @@
 
             </h1>
 
-            <div class="mb-5">
+            <div class="mb-4">
                 <form class="filter-form">
                     <div class="form-group">
                         <label for="search"> Search </label>
-                        <input type="text" id="search" th:value="${filter?.search}" name="search"
+                        <input type="text" id="search" th:value="${search}" name="search"
                                placeholder="Enter to search"
                                class="form-control">
                     </div>
@@ -73,12 +73,12 @@
                         <label for="collection"> Collection </label>
                         <select id="collection" name="collection" class="form-select">
                             <option value="">---</option>
-                            <option value="OPERATING" th:selected="${filter?.collection != null && filter?.collection.toString() == 'OPERATING'}">Operating</option>
-                            <option value="DOCUMENT" th:selected="${filter?.collection != null && filter?.collection.toString() == 'DOCUMENT'}">Document</option>
-                            <option value="FAP" th:selected="${filter?.collection != null && filter?.collection.toString() == 'FAP'}">Fap</option>
-                            <option value="COMMUNITY" th:selected="${filter?.collection != null && filter?.collection.toString() == 'COMMUNITY'}">Community</option>
-                            <option value="BUSINESS" th:selected="${filter?.collection != null && filter?.collection.toString() == 'BUSINESS'}">Business</option>
-                            <option value="OTHER" th:selected="${filter?.collection != null && filter?.collection.toString() == 'OTHER'}">Other</option>
+                            <option value="OPERATING" th:selected="${collection != null && collection.toString() == 'OPERATING'}">Operating</option>
+                            <option value="DOCUMENT" th:selected="${collection != null && collection.toString() == 'DOCUMENT'}">Document</option>
+                            <option value="FAP" th:selected="${collection != null && collection.toString() == 'FAP'}">Fap</option>
+                            <option value="COMMUNITY" th:selected="${collection != null && collection.toString() == 'COMMUNITY'}">Community</option>
+                            <option value="BUSINESS" th:selected="${collection != null && collection.toString() == 'BUSINESS'}">Business</option>
+                            <option value="OTHER" th:selected="${collection != null && collection.toString() == 'OTHER'}">Other</option>
                         </select>
                     </div>
 
@@ -224,6 +224,11 @@
                         </tbody>
                     </table>
                 </div>
+
+                <div th:replace="~{fragments/pagination :: pagination}">
+                    Pagination
+                </div>
+
                 <th:block th:if="${#lists.isEmpty(categories)}">
                     <div th:replace="~{fragments/no-data :: no-data}">No data</div>
                 </th:block>

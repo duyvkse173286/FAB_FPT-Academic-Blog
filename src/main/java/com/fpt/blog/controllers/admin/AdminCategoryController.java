@@ -17,12 +17,14 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 @RequiredArgsConstructor
@@ -35,10 +37,20 @@ public class AdminCategoryController {
 
     @GetMapping
     public String getAllCategories(@ModelAttribute GetAllCategoryRequest request, Model model) {
-        List<CategoryResponse> categories = categoryService.getAllCategories(request);
+        Page<CategoryResponse> categories = categoryService.getAllCategoriesFilterPaging(request);
 
-        model.addAttribute("filter", request);
-        model.addAttribute("categories", categories);
+        model.addAttribute("search", request.getSearch());
+        model.addAttribute("collection", request.getCollection());
+        model.addAttribute("categories", categories.getContent());
+        model.addAttribute("pageNumber", categories.getNumber() + 1);
+        model.addAttribute("totalPages", categories.getTotalPages());
+
+        model.addAttribute(
+                "queryString",
+                String.format(
+                        "/admin/categories?search=%s&collection=%s",
+                        Objects.requireNonNullElse(request.getSearch(), ""),
+                        Objects.requireNonNullElse(request.getCollection(), "")));
 
         return "admin/categories";
     }

@@ -13,12 +13,14 @@ import com.fpt.blog.services.CategoryService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 @RequiredArgsConstructor
@@ -30,10 +32,16 @@ public class AdminAwardController {
 
     @GetMapping
     public String getAllAwards(@ModelAttribute GetAllAwardRequest request, Model model) {
-        List<AwardResponse> awards = awardService.getAlAwards(request);
+        Page<AwardResponse> awards = awardService.getAlAwardsFilterPaging(request);
 
-        model.addAttribute("filter", request);
-        model.addAttribute("awards", awards);
+        model.addAttribute("search", request.getSearch());
+        model.addAttribute("awards", awards.getContent());
+        model.addAttribute("pageNumber", awards.getNumber() + 1);
+        model.addAttribute("totalPages", awards.getTotalPages());
+
+        model.addAttribute(
+                "queryString",
+                String.format("/admin/awards?search=%s", Objects.requireNonNullElse(request.getSearch(), "")));
 
         return "admin/awards";
     }

@@ -21,7 +21,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetAllUsersRequest implements BaseFilterRequest<User> {
+public class GetAllUsersRequest extends BaseFilterRequest<User> {
 
     private String search;
 

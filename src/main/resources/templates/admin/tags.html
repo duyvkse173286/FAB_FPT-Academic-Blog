@@ -46,7 +46,7 @@
                 <form class="filter-form">
                     <div class="form-group">
                         <label for="search"> Search </label>
-                        <input type="text" id="search" th:value="${filter?.search}" name="search"
+                        <input type="text" id="search" th:value="${search}" name="search"
                                placeholder="Enter to search"
                                class="form-control">
                     </div>
@@ -162,6 +162,11 @@
                         </tbody>
                     </table>
                 </div>
+
+                <div th:replace="~{fragments/pagination :: pagination}">
+                    Pagination
+                </div>
+
                 <th:block th:if="${#lists.isEmpty(tags)}">
                     <div th:replace="~{fragments/no-data :: no-data}">No data</div>
                 </th:block>

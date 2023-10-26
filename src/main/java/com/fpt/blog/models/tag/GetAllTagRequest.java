@@ -17,7 +17,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetAllTagRequest implements BaseFilterRequest<Tag> {
+public class GetAllTagRequest extends BaseFilterRequest<Tag> {
 
     private String search;
 

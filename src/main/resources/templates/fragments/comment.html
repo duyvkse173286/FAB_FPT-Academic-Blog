@@ -6,7 +6,7 @@
                 <div class="tt-item-header pt-noborder">
                     <div class="tt-item-info info-top">
                         <div class="tt-avatar-icon">
-                            <img class="avatar"
+                            <img class="user-avatar"
                                  th:src="${comment.user?.avatar != null ?  comment.user?.avatar : '/images/person-placeholder.png'}">
                         </div>
                         <div class="tt-avatar-title">
@@ -28,7 +28,7 @@
                                 <div class="topic-inner-title">
                                     <div class="topic-inner-avatar">
                                         <i class="tt-icon">
-                                            <img class="avatar"
+                                            <img class="user-avatar"
                                                  th:src="${comment.parent?.user?.avatar != null ?  comment.parent?.user?.avatar : '/images/person-placeholder.png'}">
                                         </i>
                                     </div>
@@ -58,14 +58,38 @@
                         Reply
                     </button>
                     <div sec:authorize="isAuthenticated()">
-                        <th:block th:if="${#authentication.principal?.user?.id == comment.user?.id}">
+                        <th:block th:if="${#authentication.principal?.user?.id == comment.user?.id || #authentication.principal?.user?.role.toString() == 'ADMIN' || #authentication.principal?.user?.role.toString() == 'MENTOR'}">
                             <form method="post" th:action="@{'/posts/' + ${post.id} + '/delete-comment/' + ${comment.id}}"
                                   class="pt-editor form-default pt-0">
                                 <div class="pt-row">
                                     <div class="col-auto ms-auto">
-                                        <button type="submit" class="btn btn-danger ms-2">
+                                        <button type="button" class="btn btn-danger ms-2" data-bs-toggle="modal" data-bs-target="#removeCommentModal">
                                             Delete
                                         </button>
+
+                                        <div class="modal fade" id="removeCommentModal" data-bs-backdrop="static"
+                                             data-bs-keyboard="false"
+                                             tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="staticBackdropLabel">Delete comment
+                                                                confirmation</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                    aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            Are you sure to delete comment #[[${comment.id}]]?
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-outline-danger"
+                                                                    data-bs-dismiss="modal">Close
+                                                            </button>
+                                                            <button type="submit" class="btn btn-secondary">Confirm</button>
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </form>

@@ -19,7 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
-public class GetAllCategoryRequest implements BaseFilterRequest<Category> {
+public class GetAllCategoryRequest extends BaseFilterRequest<Category> {
 
     private String search;
 

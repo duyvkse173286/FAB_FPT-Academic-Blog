@@ -20,6 +20,7 @@ import com.fpt.blog.utils.UploadMedia;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -110,10 +111,9 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostResponse> getAllPosts(BaseFilterRequest<Post> request) {
-        return postRepository.findAll(request.getSpecification())
-                .stream().map(postMapper::toResponse)
-                .toList();
+    public Page<PostResponse> getAllPosts(BaseFilterRequest<Post> request) {
+        return postRepository.findAll(request.getSpecification(), request.getPageable())
+                .map(postMapper::toResponse);
     }
 
     @Override
