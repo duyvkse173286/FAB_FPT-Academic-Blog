@@ -4,6 +4,7 @@ import com.fpt.blog.entities.Post;
 import com.fpt.blog.enums.PostStatus;
 import com.fpt.blog.enums.ReactType;
 import com.fpt.blog.models.category.response.CategoryResponse;
+import com.fpt.blog.models.comment.request.DeleteCommentRequest;
 import com.fpt.blog.models.comment.response.CommentResponse;
 import com.fpt.blog.models.post.request.CommentPostRequest;
 import com.fpt.blog.models.post.request.CreatePostRequest;
@@ -276,8 +277,15 @@ public class PostController {
             if (post == null) {
                 return "not-found";
             }
-            CommentResponse react = postService.commentPost(id, request);
-            session.setAttribute("message", "Comment successfully");
+
+            CommentResponse react = postService.commentPost(id, request, session);
+            if (react == null){
+                session.setAttribute("error", "You can't comment because you are banned from comment");
+
+            }else {
+                session.setAttribute("message", "Comment successfully");
+            }
+
         } catch (Exception ex) {
             session.setAttribute("error", ex.getMessage());
             log.error(ex.getMessage());
@@ -287,14 +295,17 @@ public class PostController {
     }
 
     @PostMapping("{postId}/delete-comment/{commentId}")
-    public String deleteComment(@PathVariable("postId") long postId, @PathVariable("commentId") long commentId, HttpSession session) {
+    public String deleteComment(@PathVariable("postId") long postId, @PathVariable("commentId") long commentId
+            , @ModelAttribute DeleteCommentRequest request, HttpSession session) {
         try {
             PostResponse post = postService.getPost(postId);
             if (post == null) {
                 return "not-found";
             }
+            UserResponse loggedUser = userService.getLoginUser();
 
-            CommentResponse comment = postService.deleteComment(commentId);
+
+            CommentResponse comment = postService.deleteComment(commentId,loggedUser.getRole(), request);
             session.setAttribute("message", "Delete Comment successfully");
         } catch (Exception ex) {
             session.setAttribute("error", ex.getMessage());

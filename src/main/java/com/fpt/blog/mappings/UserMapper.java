@@ -8,8 +8,10 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 
 @Mapper
+@Component
 public interface UserMapper {
 
     @Mapping(source = "password", target = "password", qualifiedByName = "passwordMapper")

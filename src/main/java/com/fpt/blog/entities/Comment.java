@@ -26,6 +26,8 @@ public class Comment extends BaseEntity {
     private long id;
 
     private String content;
+    private String deleteReason;
+
 
     @ManyToOne
     @JoinColumn(name = "user_id")

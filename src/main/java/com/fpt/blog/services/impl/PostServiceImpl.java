@@ -8,6 +8,7 @@ import com.fpt.blog.enums.Role;
 import com.fpt.blog.mappings.CommentMapper;
 import com.fpt.blog.mappings.PostMapper;
 import com.fpt.blog.mappings.ReactionMapper;
+import com.fpt.blog.models.comment.request.DeleteCommentRequest;
 import com.fpt.blog.models.comment.response.CommentResponse;
 import com.fpt.blog.models.common.request.BaseFilterRequest;
 import com.fpt.blog.models.post.request.*;
@@ -15,8 +16,10 @@ import com.fpt.blog.models.post.response.PostResponse;
 import com.fpt.blog.models.reaction.response.ReactionResponse;
 import com.fpt.blog.repositories.*;
 import com.fpt.blog.services.FileService;
+import com.fpt.blog.services.ISendGmailService;
 import com.fpt.blog.services.PostService;
 import com.fpt.blog.utils.UploadMedia;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -26,9 +29,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,6 +65,8 @@ public class PostServiceImpl implements PostService {
     private final CommentMapper commentMapper;
 
     private final FileService fileService;
+
+    private final ISendGmailService sendGmailService;
 
     @Override
     @Transactional
@@ -304,11 +312,21 @@ public class PostServiceImpl implements PostService {
     @Override
     @SneakyThrows
     @Transactional
-    public CommentResponse commentPost(long id, CommentPostRequest request) {
+    public CommentResponse commentPost(long id, CommentPostRequest request, HttpSession session) {
         Post post = postRepository.findById(id).orElseThrow(() -> new Exception("Post not found"));
 
         User reactor = userRepository.findLoginUser()
                 .orElseThrow(() -> new Exception("Unauthorized"));
+
+        if (reactor.getDelCmtNumber() != null){
+            if(reactor.getDelCmtNumber() >= 3){
+                if (reactor.getCmtBanExpiredAt().isAfter(LocalDateTime.now())){
+                    return null;
+                }
+            }
+
+        }
+
 
         Comment comment = new Comment()
                 .setPost(post)
@@ -331,9 +349,40 @@ public class PostServiceImpl implements PostService {
     @Override
     @SneakyThrows
     @Transactional
-    public CommentResponse deleteComment(long id) {
+    public CommentResponse deleteComment(long id, Role role, DeleteCommentRequest request) {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new Exception("Comment not found"));
+        User user = comment.getUser();
+        if(role.equals(Role.ADMIN) || role.equals(Role.MENTOR)){
+            Integer cmtDelNumer = user.getDelCmtNumber();
+            if (cmtDelNumer == null){
+                cmtDelNumer = 1;
+            }
+            else {
+                cmtDelNumer++;
+                if (cmtDelNumer == 3){
+                    user.setCmtBanAt( LocalDateTime.now());
+                    user.setCmtBanExpiredAt(LocalDateTime.now().plus(7, ChronoUnit.DAYS));
+                }else if(cmtDelNumer >= 3 && user.getCmtBanExpiredAt() != null){
+                    if(user.getCmtBanExpiredAt().isBefore(LocalDateTime.now())){
+                        cmtDelNumer = 1;
+                    }
+                }
+
+            }
+            comment.getUser().setDelCmtNumber(cmtDelNumer);
+
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+            // Gửi công việc gửi email đến ExecutorService
+            executor.submit(() -> {
+                sendGmailService.sendMailBanCommentV1(user,comment,request);
+            });
+
+            // Đóng ExecutorService sau khi đã sử dụng
+            executor.shutdown();
+
+            userRepository.save(user);
+        }
 
         commentRepository.delete(comment);
         return commentMapper.toResponse(comment);

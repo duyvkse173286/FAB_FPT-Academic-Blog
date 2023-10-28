@@ -78,6 +78,21 @@
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                                     aria-label="Close"></button>
                                                         </div>
+
+                                                        <input type="hidden" name="commentId" th:value="${comment.id}">
+
+                                                        <div class="modal-body w-100">
+                                                            <p><strong>Comment: </strong> [[${comment.content}]] </p>
+
+                                                            <div>
+                                                                <label for="reason" class="form-label">
+                                                                    <ion-icon name="close-circle-outline"></ion-icon>
+                                                                    <span>Reject reason</span>
+                                                                </label>
+                                                                <textarea required id="reason" class="form-control" name="reason" rows="6"></textarea>
+                                                            </div>
+                                                        </div>
+
                                                         <div class="modal-body">
                                                             Are you sure to delete comment #[[${comment.id}]]?
                                                         </div>

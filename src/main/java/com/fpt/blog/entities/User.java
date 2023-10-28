@@ -57,6 +57,13 @@ public class User extends BaseEntity {
 
     private Role role;
 
+    // comment
+    private Boolean isCmtBan = false;
+    private Integer delCmtNumber;
+    private LocalDateTime cmtBanAt;
+    private LocalDateTime cmtBanExpiredAt;
+    // end comment
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Post> posts;
 
@@ -74,6 +81,8 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Following> followings = new HashSet<>();
+
+
 
 }
 

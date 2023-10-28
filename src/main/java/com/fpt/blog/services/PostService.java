@@ -2,11 +2,14 @@ package com.fpt.blog.services;
 
 import com.fpt.blog.entities.Post;
 import com.fpt.blog.enums.ReactType;
+import com.fpt.blog.enums.Role;
+import com.fpt.blog.models.comment.request.DeleteCommentRequest;
 import com.fpt.blog.models.comment.response.CommentResponse;
 import com.fpt.blog.models.common.request.BaseFilterRequest;
 import com.fpt.blog.models.post.request.*;
 import com.fpt.blog.models.post.response.PostResponse;
 import com.fpt.blog.models.reaction.response.ReactionResponse;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -33,9 +36,9 @@ public interface PostService {
 
     List<CommentResponse> getAllComments(long postId);
 
-    CommentResponse commentPost(long id, CommentPostRequest request);
+    CommentResponse commentPost(long id, CommentPostRequest request, HttpSession session);
 
-    CommentResponse deleteComment(long id);
+    CommentResponse deleteComment(long id, Role role, DeleteCommentRequest request);
 
     List<PostResponse> getFeaturedPosts(int top);
 }
