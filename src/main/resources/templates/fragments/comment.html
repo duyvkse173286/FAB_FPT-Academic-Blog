@@ -63,11 +63,11 @@
                                   class="pt-editor form-default pt-0">
                                 <div class="pt-row">
                                     <div class="col-auto ms-auto">
-                                        <button type="button" class="btn btn-danger ms-2" data-bs-toggle="modal" data-bs-target="#removeCommentModal">
+                                        <button type="button" class="btn btn-danger ms-2" data-bs-toggle="modal" th:data-bs-target="'#removeCommentModal' + ${comment?.id}">
                                             Delete
                                         </button>
 
-                                        <div class="modal fade" id="removeCommentModal" data-bs-backdrop="static"
+                                        <div class="modal fade" th:id="'removeCommentModal' + ${comment?.id}" data-bs-backdrop="static"
                                              data-bs-keyboard="false"
                                              tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                             <div class="modal-dialog">
